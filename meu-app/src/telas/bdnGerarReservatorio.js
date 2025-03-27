@@ -1,54 +1,91 @@
-import { useState } from 'react';
-import React from 'react';
-import Sidebar from './menu';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "./menu.js";
 
-function Reservatorio() {
-  const [reservatorios, setReservatorios] = useState([]); // Estado para armazenar os reservatórios
-  const [nome, setNome] = useState(""); // Estado para o nome do reservatório
+function Reservatorios() {
+  const [reservatorios, setReservatorios] = useState([]);
+  const navigate = useNavigate();
 
-  const adicionarReservatorio = () => {
-    setReservatorios([...reservatorios, nome]);
-    setNome(""); // Limpar o campo de input
-  };
+  // Buscar reservatórios da API
+  useEffect(() => {
+    fetch("http://localhost:5000/reservatorios")
+      .then((response) => response.json())
+      .then((data) => setReservatorios(data))
+      .catch((error) => console.error("Erro ao buscar reservatórios:", error));
+  }, []);
 
-  const excluirReservatorio = (index) => {
-    setReservatorios(reservatorios.filter((_, i) => i !== index));
+  // Função para excluir um reservatório
+  const excluirReservatorio = (id) => {
+    fetch(`http://localhost:5000/reservatorios/${id}`, { method: "DELETE" })
+      .then(() => {
+        setReservatorios(reservatorios.filter((r) => r.id !== id));
+      })
+      .catch((error) => console.error("Erro ao excluir reservatório:", error));
   };
 
   return (
-    <div className="App-container">
-      {/* Sidebar à esquerda */}
-      <div className="Sidebar">
-        <Sidebar />
-      </div>
+    <div style={{ display: "flex" }}>
+      <Sidebar />
+      <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
+        <h1>RESERVATÓRIOS</h1>
+        <table border="1" style={{ width: "100%", marginTop: "20px", textAlign: "center" }}>
+          <thead>
+            <tr style={{ backgroundColor: "#800000", color: "white" }}>
+              <th>Tipo Combustível</th>
+              <th>Capacidade (L)</th>
+              <th>Nível Atual (L)</th>
+              <th>Temperatura</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reservatorios.length > 0 ? (
+              reservatorios.map((reservatorio) => (
+                <tr key={reservatorio.id}>
+                  <td>{reservatorio.tipoCombustivel}</td>
+                  <td>{reservatorio.capacidade}</td>
+                  <td>{reservatorio.nivelAtual}</td>
+                  <td>{reservatorio.temperatura}°C</td>
+                  <td>
+                    <button onClick={() => console.log("Editar", reservatorio.id)}>✏️</button>
+                    <button onClick={() => excluirReservatorio(reservatorio.id)}>🗑️</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5">Nenhum reservatório encontrado.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      {/* Área de conteúdo */}
-      <div className="Content" style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
-        <h1>Gerenciar Reservatórios</h1>
-        
-        {/* Formulário para adicionar */}
-        <div>
-          <input
-            type="text"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            placeholder="Nome do reservatório"
-          />
-          <button onClick={adicionarReservatorio}>Adicionar</button>
-        </div>
-
-        {/* Lista de reservatórios */}
-        <ul>
-          {reservatorios.map((reservatorio, index) => (
-            <li key={index}>
-              {reservatorio}
-              <button onClick={() => excluirReservatorio(index)}>Excluir</button>
-            </li>
-          ))}
-        </ul>
+        {/* Botão flutuante para adicionar reservatório */}
+        <button
+          onClick={() => navigate("/cadastrar-reservatorio")}
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            width: "60px",
+            height: "60px",
+            borderRadius: "50%",
+            backgroundColor: "#800000",
+            color: "white",
+            fontSize: "30px",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "2px 2px 10px rgba(0,0,0,0.3)",
+          }}
+        >
+          +
+        </button>
       </div>
     </div>
   );
 }
 
-export default Reservatorio;
+export default Reservatorios;
