@@ -124,4 +124,8 @@ const styles = {
   },
 };
 
+<<<<<<< HEAD
 export default CadastrarCliente;
+=======
+export default CadastrarCliente;
+>>>>>>> 596086ec12eb9b132eecff8156c986887b29697a
