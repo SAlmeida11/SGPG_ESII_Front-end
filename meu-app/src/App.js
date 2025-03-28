@@ -9,6 +9,8 @@ import Servicos from "./telas/servicos.js";
 import CadastrarServico from "./telas/CadastrarServico.js";
 import CadastrarReservatorio from "./telas/CadastrarReservatorio.js";
 import Venda from "./telas/Venda.js";
+import Cliente from "./telas/cliente.js";
+import CadastrarCliente from "./telas/CadastrarCliente.js";
 
 function App() {
   return (
@@ -23,9 +25,10 @@ function App() {
           <Route path="/cadastrar-servico" element={<CadastrarServico />} />
           <Route path="/cadastrar-reservatorio" element={<CadastrarReservatorio />} />
           <Route path="/Venda" element={<Venda />} /> 
+          <Route path="/clientes" element={<Cliente />} />
+          <Route path="/cadastrar-cliente" element={<CadastrarCliente />} />
           {/* Removendo comentários e garantindo que as rotas futuras sejam implementadas corretamente */}
           {/* <Route path="/venda" element={<Venda />} /> */}
-          {/* <Route path="/clientes" element={<Cliente />} /> */}
           {/* <Route path="/fornecedores" element={<Fornecedor />} /> */}
           {/* <Route path="/sair" element={<Sair />} /> */}
         </Routes>

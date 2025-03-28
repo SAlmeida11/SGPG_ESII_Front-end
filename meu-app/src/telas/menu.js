@@ -122,9 +122,14 @@ function Sidebar() {
             RESERVATÓRIOS
           </Link>
         </li>
-        <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "65px" }}>
+        <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
           <Link to="/funcionarios" style={{ color: "white", textDecoration: "none" }}>
             FUNCIONÁRIOS
+          </Link>
+        </li>
+        <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "65px" }}>
+          <Link to="/clientes" style={{ color: "white", textDecoration: "none" }}>
+            CLIENTES
           </Link>
         </li>
         <li>

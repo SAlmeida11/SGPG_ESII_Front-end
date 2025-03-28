@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Importa a navegação
 import Sidebar from "./menu.js";
 
+import viewIcon from './view.icon.png';
+import editIcon from './editar.icon.png';
+import deleteIcon from './lixeira.icon.png';
+
 function Funcionario() {
   const [funcionarios, setFuncionarios] = useState([]);
   const navigate = useNavigate(); // Hook para navegação
@@ -19,7 +23,7 @@ function Funcionario() {
 
   // Função para excluir funcionário
   const excluirFuncionario = (cpf) => {
-    fetch(`http://localhost:5000/funcionarios/${cpf}`, { method: "DELETE" })
+    fetch("http://localhost:5000/funcionarios/${cpf}", { method: "DELETE" })
       .then(() => {
         setFuncionarios(funcionarios.filter((f) => f.cpf !== cpf));
       })
@@ -37,7 +41,7 @@ function Funcionario() {
               <th>Nome</th>
               <th>CPF</th>
               <th>Data de Nascimento</th>
-              <th>Admitido</th>
+              <th>Administrador</th>
               <th>Ação</th>
             </tr>
           </thead>
@@ -45,14 +49,20 @@ function Funcionario() {
             {funcionarios.length > 0 ? (
               funcionarios.map((funcionario) => (
                 <tr key={funcionario.cpf}>
-                  <td>{funcionario.nome}</td>
+                  <td>{funcionario.nomeFun}</td>
                   <td>{funcionario.cpf}</td>
-                  <td>{funcionario.telefone}</td>
-                  <td>{funcionario.status === 1 ? "Sim" : "Não"}</td>
+                  <td>{funcionario.dtNascimento}</td>
+                  <td>{funcionario.admin === 1 ? "Sim" : "Não"}</td>
                   <td>
-                    <button onClick={() => console.log("Editar", funcionario.cpf)}>Editar</button>
-                    <button onClick={() => console.log("Visualizar", funcionario.cpf)}>Visualizar</button>
-                    <button onClick={() => excluirFuncionario(funcionario.cpf)}>Excluir</button>
+                      <button style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Visualizar", funcionario.cpf)}>
+                          <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
+                      </button>
+                      <button style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Editar", funcionario.cpf)}>
+                          <img src={editIcon} alt="Editar" style={{ width: '20px', height: '20px' }} />
+                      </button>
+                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => excluirFuncionario(funcionario.cpf)}>
+                          <img src={deleteIcon} alt="Excluir" style={{ width: '20px', height: '20px' }} />
+                      </button>
                   </td>
                 </tr>
               ))

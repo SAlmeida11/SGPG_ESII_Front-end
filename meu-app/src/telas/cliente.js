@@ -1,0 +1,139 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "./menu.js";
+
+function Cliente() {
+  const [clientes, setClientes] = useState([]); // Alterei para 'clientes' para corresponder ao padrão
+  const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
+  const navigate = useNavigate();
+
+  // Função para buscar clientes da API
+  useEffect(() => {
+    fetch("http://localhost:5000/clientes")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data); // Verifique se os dados estão corretos
+        setClientes(data); // Alterei de 'setCliente' para 'setClientes'
+      })
+      .catch((error) => console.error("Erro ao buscar clientes:", error));
+  }, []);
+
+  // Função para excluir cliente
+  const excluirCliente = (cpf) => {
+    fetch(`http://localhost:5000/clientes/${cpf}`, { method: "DELETE" }) // Corrigido a URL da exclusão
+      .then(() => {
+        setClientes(clientes.filter((cliente) => cliente.cpf !== cpf)); // Alterei de 'f' para 'cliente'
+      })
+      .catch((error) => console.error("Erro ao excluir cliente:", error));
+  };
+
+  // Função para filtrar os clientes com base no termo de busca
+  const filteredClientes = clientes.filter((cliente) =>
+    cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cliente.cpf.includes(searchTerm)
+  );
+
+  return (
+    <div style={{ display: "flex" }}>
+      <Sidebar />
+      <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
+        <h1 style={{ display: "inline-block" }}>CLIENTES</h1>
+        {/* Campo de busca */}
+        <div style={{ display: "inline-block", float: "right", marginTop: "20px" }}>
+          <input
+            type="text"
+            placeholder="Buscar"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: "5px 20px",
+              fontSize: "14px",
+              borderRadius: "20px",
+              border: "1px solid #ccc",
+              marginRight: "10px",
+            }}
+          />
+          <button
+            style={{
+              padding: "5px 10px",
+              backgroundColor: "none",
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              cursor: "pointer",
+            }}
+            onClick={() => console.log("Buscar:", searchTerm)}
+          >
+            🔍
+          </button>
+        </div>
+
+        <table
+          border="1"
+          style={{ width: "100%", marginTop: "10px", textAlign: "center" }}
+        >
+          <thead>
+            <tr style={{ backgroundColor: "#800000", color: "white" }}>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>Data de Nascimento</th>
+              <th>Tipo</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredClientes.length > 0 ? (
+              filteredClientes.map((cliente) => (
+                <tr key={cliente.cpf}>
+                  <td>{cliente.nome}</td> {/* Nome do cliente */}
+                  <td>{cliente.cpf}</td>
+                  <td>{cliente.data_nascimento}</td>
+                  <td>{cliente.tipo}</td>
+                  <td>
+                    <button onClick={() => console.log("Editar", cliente.cpf)}>
+                      ✏️
+                    </button>
+                    <button onClick={() => console.log("Visualizar", cliente.cpf)}>
+                      👁️
+                    </button>
+                    <button onClick={() => excluirCliente(cliente.cpf)}>🗑️</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5">Nenhum cliente encontrado.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+
+        {/* Botão flutuante para adicionar cliente */}
+        <button
+          onClick={() => navigate("/cadastrar-cliente")}
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            width: "60px",
+            height: "60px",
+            borderRadius: "50%",
+            backgroundColor: "#800000",
+            color: "white",
+            fontSize: "30px",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "2px 2px 10px rgba(0,0,0,0.3)",
+          }}
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default Cliente;
