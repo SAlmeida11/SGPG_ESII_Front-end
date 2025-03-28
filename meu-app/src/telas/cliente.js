@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
 
 function Cliente() {
-  const [clientes, setClientes] = useState([]); // Alterei para 'clientes' para corresponder ao padrão
+  const [clientes, setClientes] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
   const navigate = useNavigate();
 
@@ -12,26 +12,27 @@ function Cliente() {
     fetch("http://localhost:5000/clientes")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data); // Verifique se os dados estão corretos
-        setClientes(data); // Alterei de 'setCliente' para 'setClientes'
+        console.log(data);
+        setClientes(data);
       })
       .catch((error) => console.error("Erro ao buscar clientes:", error));
   }, []);
 
   // Função para excluir cliente
   const excluirCliente = (cpf) => {
-    fetch(`http://localhost:5000/clientes/${cpf}`, { method: "DELETE" }) // Corrigido a URL da exclusão
+    fetch(`http://localhost:5000/clientes/${cpf}`, { method: "DELETE" })
       .then(() => {
-        setClientes(clientes.filter((cliente) => cliente.cpf !== cpf)); // Alterei de 'f' para 'cliente'
+        setClientes(clientes.filter((cliente) => cliente.cpf !== cpf));
       })
       .catch((error) => console.error("Erro ao excluir cliente:", error));
   };
 
   // Função para filtrar os clientes com base no termo de busca
   const filteredClientes = clientes.filter((cliente) =>
-    cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cliente.cpf.includes(searchTerm)
+    (cliente.nome || "").toLowerCase().includes((searchTerm || "").toLowerCase()) ||
+    (cliente.cpf || "").includes(searchTerm)
   );
+  
 
   return (
     <div style={{ display: "flex" }}>
@@ -76,8 +77,7 @@ function Cliente() {
             <tr style={{ backgroundColor: "#800000", color: "white" }}>
               <th>Nome</th>
               <th>CPF</th>
-              <th>Data de Nascimento</th>
-              <th>Tipo</th>
+              <th>Data de Cadastro</th>
               <th>Ação</th>
             </tr>
           </thead>
@@ -85,10 +85,9 @@ function Cliente() {
             {filteredClientes.length > 0 ? (
               filteredClientes.map((cliente) => (
                 <tr key={cliente.cpf}>
-                  <td>{cliente.nome}</td> {/* Nome do cliente */}
+                  <td>{cliente.nomeCliente}</td>
                   <td>{cliente.cpf}</td>
-                  <td>{cliente.data_nascimento}</td>
-                  <td>{cliente.tipo}</td>
+                  <td>{cliente.dataCadastro}</td>
                   <td>
                     <button onClick={() => console.log("Editar", cliente.cpf)}>
                       ✏️
