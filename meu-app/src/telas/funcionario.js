@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Importa a navegação
 import Sidebar from "./menu.js";
 
+import viewIcon from './view.icon.png';
+import editIcon from './editar.icon.png';
+import deleteIcon from './lixeira.icon.png';
+
 function Funcionario() {
-  const [funcionario, setFuncionarios] = useState([]);
+  const [funcionarios, setFuncionarios] = useState([]);
+  const navigate = useNavigate(); // Hook para navegação
 
   // Função para buscar funcionários da API
   useEffect(() => {
@@ -17,9 +23,9 @@ function Funcionario() {
 
   // Função para excluir funcionário
   const excluirFuncionario = (cpf) => {
-    fetch(`http://localhost:5000/funcionarios/${cpf}`, { method: "DELETE" })
+    fetch("http://localhost:5000/funcionarios/${cpf}", { method: "DELETE" })
       .then(() => {
-        setFuncionarios(funcionario.filter((f) => f.cpf !== cpf));
+        setFuncionarios(funcionarios.filter((f) => f.cpf !== cpf));
       })
       .catch((error) => console.error("Erro ao excluir funcionário:", error));
   };
@@ -35,24 +41,28 @@ function Funcionario() {
               <th>Nome</th>
               <th>CPF</th>
               <th>Data de Nascimento</th>
-              <th>Admitido</th>
+              <th>Administrador</th>
               <th>Ação</th>
             </tr>
           </thead>
           <tbody>
-            {funcionario.length > 0 ? (
-              funcionario.map((funcionario) => (
+            {funcionarios.length > 0 ? (
+              funcionarios.map((funcionario) => (
                 <tr key={funcionario.cpf}>
-                  <td>{funcionario.nome}</td>
+                  <td>{funcionario.nomeFun}</td>
                   <td>{funcionario.cpf}</td>
-                  {/* Alterado: "telefone" corresponde à data de nascimento no JSON */}
-                  <td>{funcionario.telefone}</td>
-                  {/* Alterado: "status" interpretado como 0 ou 1 */}
-                  <td>{funcionario.status === 1 ? "Sim" : "Não"}</td>
+                  <td>{funcionario.dtNascimento}</td>
+                  <td>{funcionario.admin === 1 ? "Sim" : "Não"}</td>
                   <td>
-                    <button onClick={() => console.log("Editar", funcionario.cpf)}>Editar</button>
-                    <button onClick={() => console.log("Visualizar", funcionario.cpf)}>Visualizar</button>
-                    <button onClick={() => excluirFuncionario(funcionario.cpf)}>Excluir</button>
+                      <button style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Visualizar", funcionario.cpf)}>
+                          <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
+                      </button>
+                      <button style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Editar", funcionario.cpf)}>
+                          <img src={editIcon} alt="Editar" style={{ width: '20px', height: '20px' }} />
+                      </button>
+                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => excluirFuncionario(funcionario.cpf)}>
+                          <img src={deleteIcon} alt="Excluir" style={{ width: '20px', height: '20px' }} />
+                      </button>
                   </td>
                 </tr>
               ))
@@ -63,52 +73,33 @@ function Funcionario() {
             )}
           </tbody>
         </table>
+
+        {/* Botão flutuante para adicionar funcionário */}
+        <button
+          onClick={() => navigate("/cadastrar-funcionario")} // Redireciona para a tela de cadastro
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            width: "60px",
+            height: "60px",
+            borderRadius: "50%",
+            backgroundColor: "#800000",
+            color: "white",
+            fontSize: "30px",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "2px 2px 10px rgba(0,0,0,0.3)",
+          }}
+        >
+          +
+        </button>
       </div>
     </div>
   );
 }
 
 export default Funcionario;
-
-
-/*
-import React from "react";
-import Sidebar from "./menu.js";
-
-function Funcionario() {
-  return (
-    <div style={{ display: "flex" }}>
-      <Sidebar />
-      <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
-        <h1>FUNCIONÁRIOS</h1>
-        <table border="1" style={{ width: "100%", marginTop: "20px", textAlign: "center"}}>
-          <thead>
-            <tr style={{ backgroundColor: "#800000", color: "white" }}>
-              <th>Nome</th>
-              <th>CPF</th>
-              <th>Telefone</th>
-              <th>Status</th>
-              <th>Ação</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>João da Silva</td>
-              <td>123.456.789-09</td>
-              <td>(11) 98765-4321</td>
-              <td>Ativo</td>
-              <td>
-                <button>Editar</button>
-                <button>Visualizar</button>
-                <button>Excluir</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-export default Funcionario;
-*/

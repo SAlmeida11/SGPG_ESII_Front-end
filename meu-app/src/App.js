@@ -1,11 +1,16 @@
-//import logo from './logo.svg';
-import React from 'react';
-import './App.css';
-import Login from './telas/login.js';
-import Sidebar from './telas/menu.js';
-import Funcionario from './telas/funcionario.js';
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Reservatorio from './telas/bdnGerarReservatorio.js';
+import "./App.css";
+import Login from "./telas/login.js";
+import Funcionario from "./telas/funcionario.js";
+import CadastrarFuncionario from "./telas/CadastrarFuncionario.js"; // Importa a tela de cadastro
+import Reservatorio from "./telas/bdnGerarReservatorio.js";
+import Servicos from "./telas/servicos.js";
+import CadastrarServico from "./telas/CadastrarServico.js";
+import CadastrarReservatorio from "./telas/CadastrarReservatorio.js";
+import Venda from './telas/Vendas';
+import Cliente from './telas/clientes';
+import CadastrarCliente from "./telas/CadastrarCliente.js";
 
 function App() {
   return (
@@ -13,13 +18,19 @@ function App() {
       <div style={{ marginLeft: "0px", padding: "0px", flexGrow: "1" }}>
         <Routes>
           <Route path="/" element={<Login />} />
-          {'<Route path="/venda" element={<Venda />} />'}
-          {'<Route path="/clientes" element={<Cliente />} />'}
-          {'<Route path="/fornecedores" element={<Fornecedor />} />'}
-          {'<Route path="/servicos" element={<Servico />} />'}
-          <Route path="/reservatorios" element={<Reservatorio />} />
           <Route path="/funcionarios" element={<Funcionario />} />
-          {'<Route path="/sair" element={<Sair />} />'}
+          <Route path="/cadastrar-funcionario" element={<CadastrarFuncionario />} />
+          <Route path="/reservatorios" element={<Reservatorio />} />
+          <Route path="/servicos" element={<Servicos />} /> 
+          <Route path="/cadastrar-servico" element={<CadastrarServico />} />
+          <Route path="/cadastrar-reservatorio" element={<CadastrarReservatorio />} />
+          <Route path="/Venda" element={<Venda />} /> 
+          <Route path="/clientes" element={<Cliente />} />
+          <Route path="/cadastrar-cliente" element={<CadastrarCliente />} />
+          {/* Removendo comentários e garantindo que as rotas futuras sejam implementadas corretamente */}
+          {/* <Route path="/venda" element={<Venda />} /> */}
+          {/* <Route path="/fornecedores" element={<Fornecedor />} /> */}
+          {/* <Route path="/sair" element={<Sair />} /> */}
         </Routes>
       </div>
     </Router>
