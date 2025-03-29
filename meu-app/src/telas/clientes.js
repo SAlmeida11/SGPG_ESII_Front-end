@@ -3,6 +3,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
 
+import viewIcon from './view.icon.png';
+import editIcon from './editar.icon.png';
+import deleteIcon from './lixeira.icon.png';
+
 function Cliente() {
   const [clientes, setClientes] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
@@ -90,13 +94,15 @@ function Cliente() {
                   <td>{cliente.cpf}</td>
                   <td>{cliente.dataCadastro}</td>
                   <td>
-                    <button onClick={() => console.log("Editar", cliente.cpf)}>
-                      ✏️
-                    </button>
-                    <button onClick={() => console.log("Visualizar", cliente.cpf)}>
-                      👁️
-                    </button>
-                    <button onClick={() => excluirCliente(cliente.cpf)}>🗑️</button>
+                      <button style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Visualizar", cliente.cpf)}>
+                          <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
+                      </button>
+                      <button style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Editar", cliente.cpf)}>
+                          <img src={editIcon} alt="Editar" style={{ width: '20px', height: '20px' }} />
+                      </button>
+                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => excluirCliente(cliente.cpf)}>
+                          <img src={deleteIcon} alt="Excluir" style={{ width: '20px', height: '20px' }} />
+                      </button>
                   </td>
                 </tr>
               ))

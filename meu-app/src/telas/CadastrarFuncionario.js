@@ -29,11 +29,11 @@ function CadastrarFuncionario() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/funcionarios", {
+      const response = await fetch("http://localhost:5000/cadfuncionarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
-      });
+    });
 
       if (response.ok) {
         alert("Funcionário cadastrado com sucesso!");
