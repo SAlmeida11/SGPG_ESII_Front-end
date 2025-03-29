@@ -8,21 +8,31 @@ function Reservatorios() {
   const [reservatorios, setReservatorios] = useState([]);
   const navigate = useNavigate();
 
-  // Buscar reservatórios da API
   useEffect(() => {
-    fetch("http://localhost:5000/reservatorios")
-      .then((response) => response.json())
-      .then((data) => setReservatorios(data))
-      .catch((error) => console.error("Erro ao buscar reservatórios:", error));
+    async function fetchReservatorios() {
+      try {
+        const response = await fetch("http://localhost:5000/reservatorios");
+        if (!response.ok) throw new Error("Erro ao buscar reservatórios");
+
+        const data = await response.json();
+        // A API retorna um objeto com a chave "reservatorios"
+        setReservatorios(data.reservatorios);
+      } catch (error) {
+        console.error("Erro:", error);
+      }
+    }
+
+    fetchReservatorios();
   }, []);
 
-  // Função para excluir um reservatório
   const excluirReservatorio = (id) => {
     fetch(`http://localhost:5000/reservatorios/${id}`, { method: "DELETE" })
       .then(() => {
         setReservatorios(reservatorios.filter((r) => r.id !== id));
       })
-      .catch((error) => console.error("Erro ao excluir reservatório:", error));
+      .catch((error) =>
+        console.error("Erro ao excluir reservatório:", error)
+      );
   };
 
   return (
@@ -33,7 +43,7 @@ function Reservatorios() {
         <table border="1" style={{ width: "100%", marginTop: "20px", textAlign: "center" }}>
           <thead>
             <tr style={{ backgroundColor: "#800000", color: "white" }}>
-              <th>Tipo Combustível</th>
+              <th>Combustível</th>
               <th>Capacidade (L)</th>
               <th>Nível Atual (L)</th>
               <th>Temperatura</th>
@@ -44,7 +54,7 @@ function Reservatorios() {
             {reservatorios.length > 0 ? (
               reservatorios.map((reservatorio) => (
                 <tr key={reservatorio.id}>
-                  <td>{reservatorio.tipoCombustivel}</td>
+                  <td>{reservatorio.combustivel}</td>
                   <td>{reservatorio.capacidade}</td>
                   <td>{reservatorio.nivelAtual}</td>
                   <td>{reservatorio.temperatura}°C</td>
@@ -61,8 +71,6 @@ function Reservatorios() {
             )}
           </tbody>
         </table>
-
-        {/* Botão flutuante para adicionar reservatório */}
         <button
           onClick={() => navigate("/cadastrar-reservatorio")}
           style={{
