@@ -4,7 +4,7 @@ import Sidebar from "./menu.js";
 import useVerificarAutenticacao from "./autenticacao";
 
 function Venda() {
-  useVerificarAutenticacao();
+
   const [cpf, setCpf] = useState("");
   const [formaPagamento, setFormaPagamento] = useState("");
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ function Venda() {
       <Sidebar />
       <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
         <h1>Tela de Venda</h1>
-        
+
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <button style={{ padding: "10px", fontSize: "16px" }}>Abastecimento</button>
           <button style={{ padding: "10px", fontSize: "16px" }}>Produto</button>
@@ -41,11 +41,11 @@ function Venda() {
 
         <div style={{ marginTop: "20px" }}>
           <h2>Informações do Cliente</h2>
-          <input 
-            type="text" 
-            placeholder="CPF" 
-            value={cpf} 
-            onChange={(e) => setCpf(e.target.value)} 
+          <input
+            type="text"
+            placeholder="CPF"
+            value={cpf}
+            onChange={(e) => setCpf(e.target.value)}
             style={{ padding: "8px", marginRight: "10px" }}
           />
           <button style={{ padding: "8px", backgroundColor: "green", color: "white" }}>+ Cadastrar Cliente</button>
@@ -53,9 +53,9 @@ function Venda() {
 
         <div style={{ marginTop: "20px" }}>
           <h2>Pagamento</h2>
-          <select 
-            value={formaPagamento} 
-            onChange={(e) => setFormaPagamento(e.target.value)} 
+          <select
+            value={formaPagamento}
+            onChange={(e) => setFormaPagamento(e.target.value)}
             style={{ padding: "8px" }}
           >
             <option value="">Selecione a forma de pagamento</option>

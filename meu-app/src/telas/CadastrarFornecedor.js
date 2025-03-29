@@ -78,7 +78,7 @@ function CadastrarFornecedor() {
               onChange={handleChange}
               style={styles.input}
             />
-            <select
+            {/* <select
               name="status"
               value={form.status}
               onChange={handleChange}
@@ -86,7 +86,7 @@ function CadastrarFornecedor() {
             >
               <option value="ativo">Ativo</option>
               <option value="inativo">Inativo</option>
-            </select>
+            </select> */}
           </fieldset>
 
           <div style={styles.buttonContainer}>
@@ -114,6 +114,9 @@ const styles = {
     marginBottom: "15px",
     borderRadius: "8px",
     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "15px", // Espaço entre os elementos
   },
   input: {
     width: "45%",

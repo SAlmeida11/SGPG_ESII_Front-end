@@ -35,7 +35,7 @@ function CadastrarFuncionario() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
-    });
+      });
 
       if (response.ok) {
         alert("Funcionário cadastrado com sucesso!");
@@ -69,6 +69,7 @@ function CadastrarFuncionario() {
             <input type="text" name="cidade" placeholder="Cidade" value={form.cidade} onChange={handleChange} style={styles.input} />
             <input type="text" name="estado" placeholder="Estado" value={form.estado} onChange={handleChange} style={styles.input} />
             <input type="text" name="logradouro" placeholder="Logradouro" value={form.logradouro} onChange={handleChange} style={styles.input} />
+            <input type="text" name="bairro" placeholder="Bairro" value={form.bairro} onChange={handleChange} style={styles.input} />
             <input type="text" name="numero" placeholder="Número" value={form.numero} onChange={handleChange} style={styles.input} />
           </fieldset>
 
@@ -84,6 +85,15 @@ function CadastrarFuncionario() {
             <legend>Contrato</legend>
             <input type="date" name="dataContratacao" placeholder="Data de Contratação" value={form.dataContratacao} onChange={handleChange} style={styles.input} />
             <input type="number" name="salario" placeholder="Salário" value={form.salario} onChange={handleChange} style={styles.input} />
+            <select
+              name="administrador"
+              value={form.status}
+              onChange={handleChange}
+              style={styles.input}
+            >
+              <option value="NAO">Padrão</option>
+              <option value="SIM">Administrador</option>
+            </select>
           </fieldset>
 
           {/* Botões */}
