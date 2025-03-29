@@ -55,10 +55,43 @@ const styles = {
 
 export default Sidebar;*/
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 
 function Sidebar() {
+  const [nome, setNome] = useState("Carregando...");
+  const [loading, setLoading] = useState(true);
+
+  // Recupera o CPF do localStorage
+  const cpf = localStorage.getItem("cpf");
+
+  useEffect(() => {
+    if (cpf) {
+      // Requisição para buscar o nome do funcionário com base no CPF
+      fetch(`http://localhost:5000/funcionarios/${cpf}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Resposta da API:", data); // Verifica o que está sendo retornado
+
+          // Verifica se os dados foram encontrados e atualiza o nome
+          if (data && data.nomeFun) {
+            setNome(data.nomeFun); // Atualiza o nome do funcionário
+          } else {
+            setNome("Funcionário não encontrado");
+          }
+          setLoading(false); // Finaliza o carregamento
+        })
+        .catch((error) => {
+          console.error("Erro ao carregar dados do funcionário:", error);
+          setNome("Erro ao carregar nome");
+          setLoading(false);
+        });
+    } else {
+      setNome("CPF não encontrado no localStorage");
+      setLoading(false);
+    }
+  }, [cpf]); // Recarrega quando o CPF mudar (se necessário)
+
   return (
     <div
       style={{
@@ -87,9 +120,9 @@ function Sidebar() {
           }}
         ></div>
         <p style={{ margin: "10px 0", fontWeight: "bold" }}>
-          LUÍZ INÁCIO MEDEIROS VELA
+          {loading ? "Carregando..." : nome}
         </p>
-        <p>40028922</p>
+        <p>{cpf}</p>
       </div>
 
       {/* Menu */}

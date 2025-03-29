@@ -20,6 +20,8 @@ function Login() {
     const data = await response.json();
 
     if (response.ok) {
+      // Salva o CPF no localStorage
+      localStorage.setItem("cpf", cpf);
       // Redireciona para a página de vendas
       navigate("/venda");
     } else {
