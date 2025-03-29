@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
+import useVerificarAutenticacao from "./autenticacao";
 
 function Cliente() {
+  useVerificarAutenticacao();
   const [clientes, setClientes] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
   const navigate = useNavigate();

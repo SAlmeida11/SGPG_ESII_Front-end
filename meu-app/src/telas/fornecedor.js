@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
+import useVerificarAutenticacao from "./autenticacao";
 
 import viewIcon from './view.icon.png';
 import editIcon from './editar.icon.png';
@@ -8,6 +9,7 @@ import deleteIcon from './lixeira.icon.png';
 import boxIcon from './box.icon.png';
 
 function Fornecedor() {
+  useVerificarAutenticacao();
   const [fornecedores, setFornecedores] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
   const navigate = useNavigate();

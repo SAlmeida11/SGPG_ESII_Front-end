@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
+import useVerificarAutenticacao from "./autenticacao";
 
 
 function CadastrarCliente() {
+  useVerificarAutenticacao();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     nome: "",

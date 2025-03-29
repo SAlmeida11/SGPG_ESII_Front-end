@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./menu";
+import useVerificarAutenticacao from "./autenticacao";
 
 function Venda() {
+  useVerificarAutenticacao();
   const [cpf, setCpf] = useState("");
   const [formaPagamento, setFormaPagamento] = useState("");
   const navigate = useNavigate();

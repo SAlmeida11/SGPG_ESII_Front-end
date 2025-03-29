@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Importa a navegação
 import Sidebar from "./menu.js";
+import useVerificarAutenticacao from "./autenticacao";
 
 import viewIcon from './view.icon.png';
 import editIcon from './editar.icon.png';
 import deleteIcon from './lixeira.icon.png';
 
 function Funcionario() {
+  useVerificarAutenticacao();
   const [funcionarios, setFuncionarios] = useState([]);
   const navigate = useNavigate(); // Hook para navegação
 
