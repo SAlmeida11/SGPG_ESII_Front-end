@@ -15,6 +15,8 @@ import Fornecedor from "./telas/fornecedor.js";
 import Itens from "./telas/item.js";
 import CadastrarItem from "./telas/CadastarItem.js";
 import CadastrarFornecedor from "./telas/CadastrarFornecedor.js";
+import Combustivel from "./telas/combustivel.js"
+import CadastrarCombustivel from "./telas/CadastrarCombustivel.js"
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
           <Route path="/cadastrar-item" element={<CadastrarItem />} />
           <Route path="/fornecedores" element={<Fornecedor />} /> 
           <Route path="/Cadastrar-fornecedor" element={<CadastrarFornecedor />} /> 
+          <Route path="/combustiveis" element={<Combustivel />} />
+          <Route path="/cadastrar-combustivel" element={<CadastrarCombustivel />} />
           {/* Removendo comentários e garantindo que as rotas futuras sejam implementadas corretamente */}
           {/* <Route path="/venda" element={<Venda />} /> */}
           {/* <Route path="/sair" element={<Sair />} /> */}
