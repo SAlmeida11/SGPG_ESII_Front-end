@@ -133,7 +133,7 @@ function Sidebar() {
           </Link>
         </li>
         <li>
-          <Link to="/sair" style={{ color: "white", textDecoration: "none" }}>
+          <Link to="/" style={{ color: "white", textDecoration: "none" }}>
             SAIR
           </Link>
         </li>
