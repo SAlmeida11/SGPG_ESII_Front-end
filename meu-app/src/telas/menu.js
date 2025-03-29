@@ -61,6 +61,7 @@ import { Link, useNavigate } from "react-router-dom";
 function Sidebar() {
   const [nome, setNome] = useState("Carregando...");
   const [loading, setLoading] = useState(true);
+  const [admin, setAdmin] = useState(null);
   const navigate = useNavigate();
 
   // Recupera o CPF do localStorage
@@ -77,6 +78,7 @@ function Sidebar() {
           // Verifica se os dados foram encontrados e atualiza o nome
           if (data && data.nomeFun) {
             setNome(data.nomeFun); // Atualiza o nome do funcionário
+            setAdmin(data.admin === 1); // Define se é admin ou não
           } else {
             setNome("Funcionário não encontrado");
           }
@@ -145,11 +147,6 @@ function Sidebar() {
           </Link>
         </li>
         <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
-          <Link to="/fornecedores" style={{ color: "white", textDecoration: "none" }}>
-            FORNECEDORES
-          </Link>
-        </li>
-        <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
           <Link to="/item" style={{ color: "white", textDecoration: "none" }}>
             ITEM
           </Link>
@@ -160,38 +157,54 @@ function Sidebar() {
           </Link>
         </li>
         <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
-          <Link to="/reservatorios" style={{ color: "white", textDecoration: "none" }}>
-            RESERVATÓRIOS
-          </Link>
-        </li>
-        <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
-          <Link to="/funcionarios" style={{ color: "white", textDecoration: "none" }}>
-            FUNCIONÁRIOS
-          </Link>
-        </li>
-        <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "65px" }}>
-          <Link to="/combustiveis" style={{ color: "white", textDecoration: "none" }}>
-            COMBUSTÍVEIS
-          </Link>
-        </li>
-        <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "65px" }}>
           <Link to="/clientes" style={{ color: "white", textDecoration: "none" }}>
             CLIENTES
           </Link>
         </li>
+        <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
+          <Link to="/combustiveis" style={{ color: "white", textDecoration: "none" }}>
+            COMBUSTÍVEIS
+          </Link>
+        </li>
+        <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
+          <Link to="/reservatorios" style={{ color: "white", textDecoration: "none" }}>
+            RESERVATÓRIOS
+          </Link>
+        </li>
+        {/* Opções visíveis apenas para administradores */}
+        {admin && (
+          <>
+            <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
+              <Link to="/fornecedores" style={{ color: "white", textDecoration: "none" }}>
+                FORNECEDORES
+              </Link>
+            </li>
+            <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
+              <Link to="/funcionarios" style={{ color: "white", textDecoration: "none" }}>
+                FUNCIONÁRIOS
+              </Link>
+            </li>
+          </>
+        )}
+        
+        
         <li>
-          <button
-            onClick={handleLogout}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'white',
-              fontSize: '16px',
-              cursor: 'pointer'
-            }}
-          >
-            SAIR
-          </button>
+        <button
+          onClick={handleLogout}
+          style={{
+            background: "none",
+            border: "3px solid white",
+            color: "white",
+            fontSize: "16px",
+            padding: "10px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            width: "75%",
+            marginTop: "auto"
+          }}
+        >
+          SAIR
+        </button>
         </li>
       </ul>
     </div>

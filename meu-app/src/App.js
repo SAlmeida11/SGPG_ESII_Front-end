@@ -40,6 +40,7 @@ function App() {
           <Route path="/cadastrar-servico" element={<CadastrarServico />} />
           <Route path="/fornecedores" element={<Fornecedor />} />
           <Route path="/funcionarios" element={<Funcionario />} />
+          <Route path="/clientes" element={<Cliente />} />
           <Route path="/item" element={<Itens />} />
           <Route path="/reservatorios" element={<Reservatorio />} />
           <Route path="/servicos" element={<Servicos />} />

@@ -65,7 +65,7 @@ function Venda() {
         </div>
 
         <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
-          <button onClick={() => navigate("/")} style={{ padding: "10px", backgroundColor: "red", color: "white" }}>Cancelar</button>
+          <button onClick={() => navigate("/venda")} style={{ padding: "10px", backgroundColor: "red", color: "white" }}>Cancelar</button>
           <button style={{ padding: "10px", backgroundColor: "green", color: "white" }}>Confirmar</button>
         </div>
       </div>
