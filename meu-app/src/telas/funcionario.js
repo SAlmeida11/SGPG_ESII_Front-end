@@ -101,4 +101,5 @@ function Funcionario() {
     </div>
   );
 }
-export default Funcionario
+
+export default Funcionario;
