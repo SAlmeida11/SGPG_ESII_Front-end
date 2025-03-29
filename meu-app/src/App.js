@@ -15,6 +15,8 @@ import Fornecedor from "./telas/fornecedor.js";
 import Itens from "./telas/item.js";
 import CadastrarItem from "./telas/CadastarItem.js";
 import CadastrarFornecedor from "./telas/CadastrarFornecedor.js";
+import VisualizarFornecedor from "./telas/VisualizarFornecedor.js";
+import VisualizarCliente from "./telas/VisualizarCliente.js";
 
 function App() {
   return (
@@ -22,19 +24,20 @@ function App() {
       <div style={{ marginLeft: "0px", padding: "0px", flexGrow: "1" }}>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/funcionarios" element={<Funcionario />} />
-          <Route path="/cadastrar-funcionario" element={<CadastrarFuncionario />} />
-          <Route path="/reservatorios" element={<Reservatorio />} />
-          <Route path="/servicos" element={<Servicos />} /> 
-          <Route path="/cadastrar-servico" element={<CadastrarServico />} />
-          <Route path="/cadastrar-reservatorio" element={<CadastrarReservatorio />} />
-          <Route path="/Venda" element={<Venda />} /> 
-          <Route path="/clientes" element={<Cliente />} />
           <Route path="/cadastrar-cliente" element={<CadastrarCliente />} />
-          <Route path="/item" element={<Itens />} />
+          <Route path="/cadastrar-fornecedor" element={<CadastrarFornecedor />} />
+          <Route path="/cadastrar-funcionario" element={<CadastrarFuncionario />} />
           <Route path="/cadastrar-item" element={<CadastrarItem />} />
-          <Route path="/fornecedores" element={<Fornecedor />} /> 
-          <Route path="/Cadastrar-fornecedor" element={<CadastrarFornecedor />} /> 
+          <Route path="/cadastrar-reservatorio" element={<CadastrarReservatorio />} />
+          <Route path="/cadastrar-servico" element={<CadastrarServico />} />
+          <Route path="/fornecedores" element={<Fornecedor />} />
+          <Route path="/funcionarios" element={<Funcionario />} />
+          <Route path="/item" element={<Itens />} />
+          <Route path="/reservatorios" element={<Reservatorio />} />
+          <Route path="/servicos" element={<Servicos />} />
+          <Route path="/venda" element={<Venda />} />
+          <Route path="/visualizar-fornecedor" element={<VisualizarFornecedor />} />s
+          <Route path="/visualizar-cliente" element={<VisualizarCliente />} />s
           {/* Removendo comentários e garantindo que as rotas futuras sejam implementadas corretamente */}
           {/* <Route path="/venda" element={<Venda />} /> */}
           {/* <Route path="/sair" element={<Sair />} /> */}
