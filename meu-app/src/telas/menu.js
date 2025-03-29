@@ -56,11 +56,12 @@ const styles = {
 export default Sidebar;*/
 
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 
 function Sidebar() {
   const [nome, setNome] = useState("Carregando...");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Recupera o CPF do localStorage
   const cpf = localStorage.getItem("cpf");
@@ -91,6 +92,14 @@ function Sidebar() {
       setLoading(false);
     }
   }, [cpf]); // Recarrega quando o CPF mudar (se necessário)
+
+  const handleLogout = () => {
+    // Limpa o CPF do localStorage
+    localStorage.removeItem('cpf');
+    
+    // Redireciona para a página de login
+    navigate('/');
+  };
 
   return (
     <div
@@ -166,9 +175,18 @@ function Sidebar() {
           </Link>
         </li>
         <li>
-          <Link to="/" style={{ color: "white", textDecoration: "none" }}>
+          <button
+            onClick={handleLogout}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'white',
+              fontSize: '16px',
+              cursor: 'pointer'
+            }}
+          >
             SAIR
-          </Link>
+          </button>
         </li>
       </ul>
     </div>
