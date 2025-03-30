@@ -15,6 +15,73 @@ function Venda() {
   const [mostrarProdutos, setMostrarProdutos] = useState(false);
   const navigate = useNavigate();
 
+  const criarPagamento = async (formaPagamento, valorTotal) => {
+    const pagamento = {
+      Desconto: 0.0,
+      FormaPagamento: formaPagamento,
+      IntituiicaoCartaoCred_cnpj: "12345678000101",
+      Juros: 0.0,
+      Parcelado: 0,
+      Valor: valorTotal
+    };
+  
+    try {
+      const response = await fetch("http://localhost:5000/pagamento", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(pagamento)
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        return data.id_pagamento; // Supondo que a resposta da API contenha o id do pagamento
+      } else {
+        throw new Error("Erro ao cadastrar o pagamento");
+      }
+    } catch (error) {
+      console.error("Erro ao criar pagamento:", error);
+    }
+  };
+  
+  const cadastrarVenda = async (cpfCliente, formaPagamento, valorTotal) => {
+    const idPagamento = await criarPagamento(formaPagamento, valorTotal);
+  
+    if (!idPagamento) {
+      alert("Erro ao criar o pagamento. Não será possível cadastrar a venda.");
+      return;
+    }
+  
+    const venda = {
+      data_hora: new Date().toISOString(), // Data e hora do sistema
+      Venda_combustivel_idvendaCombustivel: 1, // ID do combustível
+      Pagamento_id_pagamento: idPagamento,
+      cliente_cpf: cpfCliente,
+      funcionario_cpf: localStorage.getItem("cpfFuncionario") // CPF do funcionário salvo no localStorage
+    };
+  
+    try {
+      const response = await fetch("http://localhost:5000/venda", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(venda)
+      });
+  
+      if (response.ok) {
+        alert("Venda cadastrada com sucesso!");
+        resetarCampos(); // Limpa os campos após o cadastro
+      } else {
+        throw new Error("Erro ao cadastrar a venda");
+      }
+    } catch (error) {
+      console.error("Erro ao cadastrar venda:", error);
+    }
+  };
+  
+
   // Carrega os itens da API
   useEffect(() => {
     fetch("http://localhost:5000/item")
@@ -196,7 +263,12 @@ function Venda() {
             <button onClick={resetarCampos} style={{ padding: "10px", backgroundColor: "red", color: "white" }}>
               Cancelar
             </button>
-            <button style={{ padding: "10px", backgroundColor: "green", color: "white" }}>Confirmar</button>
+            <button
+              style={{ padding: "10px", backgroundColor: "green", color: "white" }}
+              onClick={() => cadastrarVenda(cpf, formaPagamento, calcularTotal())}
+            >
+              Confirmar
+            </button>
           </div>
         </div>
       </div>
