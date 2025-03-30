@@ -1,40 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
 import useVerificarAutenticacao from "./autenticacao";
 
+import { MdEdit } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
+
 function Reservatorios() {
   useVerificarAutenticacao();
-  const [reservatorios, setReservatorios] = useState([
-    {
-      id: 1,
-      tipoCombustivel: "Gasolina",
-      capacidade: 5000,
-      nivelAtual: 3200,
-      temperatura: 25,
-    },
-    {
-      id: 2,
-      tipoCombustivel: "Diesel",
-      capacidade: 8000,
-      nivelAtual: 5000,
-      temperatura: 22,
-    },
-    {
-      id: 3,
-      tipoCombustivel: "Etanol",
-      capacidade: 6000,
-      nivelAtual: 4500,
-      temperatura: 27,
-    },
-    {
-      id: 4,
-      tipoCombustivel: "Querosene",
-      capacidade: 7000,
-      nivelAtual: 6000,
-      temperatura: 24,
-    },
-  ]);
+  const [reservatorios, setReservatorios] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -88,8 +62,15 @@ function Reservatorios() {
                   <td>{reservatorio.nivelAtual}</td>
                   <td>{reservatorio.temperatura}°C</td>
                   <td>
-                    <button onClick={() => console.log("Editar", reservatorio.id)}>✏️</button>
-                    <button onClick={() => excluirReservatorio(reservatorio.id)}>🗑️</button>
+                  <Link to="/editar-reservatorio">
+                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer', marginRight: '5px' }} onClick={() => console.log("Editar", reservatorio.id)}>
+                          <MdEdit alt="Editar" style={styles.icon} />
+                        </button>
+                      </Link>
+
+                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer', marginRight: '5px' }} onClick={() => excluirReservatorio(reservatorio.id)}>
+                        <FaTrash alt="Excluir" style={styles.icon} />
+                      </button>
                   </td>
                 </tr>
               ))
@@ -125,6 +106,10 @@ function Reservatorios() {
       </div>
     </div>
   );
+}
+
+const styles = {
+  icon: { width: '18px', height: '18px', color: 'white' },
 }
 
 export default Reservatorios;

@@ -20,25 +20,7 @@ function Fornecedor() {
       cnpj: "00.000.000/0001-00",
       telefone: "(11) 99999-9999",
       Status: "Ativo",
-    },
-    {
-      NomeFor: "Fornecedor 2",
-      cnpj: "11.111.111/1111-11",
-      telefone: "(21) 98888-8888",
-      Status: "Inativo",
-    },
-    {
-      NomeFor: "Fornecedor 3",
-      cnpj: "22.222.222/2222-22",
-      telefone: "(31) 97777-7777",
-      Status: "Ativo",
-    },
-    {
-      NomeFor: "Fornecedor 4",
-      cnpj: "33.333.333/3333-33",
-      telefone: "(41) 96666-6666",
-      Status: "Ativo",
-    },
+    }
   ]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
   const navigate = useNavigate();

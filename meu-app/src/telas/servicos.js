@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
 import useVerificarAutenticacao from "./autenticacao";
+
+import { IoEyeSharp } from "react-icons/io5";
+import { MdEdit } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
 
 function Servicos() {
   useVerificarAutenticacao();
@@ -83,9 +87,21 @@ function Servicos() {
                     </span>
                   </td>
                   <td>
-                    <button onClick={() => console.log("Editar", servico.id)}>Editar</button>
-                    <button onClick={() => console.log("Visualizar", servico.id)}>Visualizar</button>
-                    <button onClick={() => excluirServico(servico.id)}>Excluir</button>
+                      <Link to="/visualizar-servico" >
+                        <button style={{ backgroundColor: '#A7A7A7', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer', marginRight: '5px' }} onClick={() => console.log("Visualizar", servico.id)}>
+                          <IoEyeSharp
+                            alt="Visualizar" style={styles.icon} />
+                        </button>
+                      </Link>
+                      <Link to="/editar-servico" >
+                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer', marginRight: '5px' }} onClick={() => console.log("Editar", servico.id)}>
+                          <MdEdit
+                            alt="Editar" style={styles.icon} />
+                        </button>
+                      </Link>
+                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirServico(servico.id)}>
+                        <FaTrash alt="Excluir" style={styles.icon} />
+                      </button>
                   </td>
                 </tr>
               ))
@@ -122,6 +138,10 @@ function Servicos() {
       </div>
     </div>
   );
+}
+
+const styles = {
+  icon: { width: '18px', height: '18px', color: 'white' },
 }
 
 export default Servicos;
