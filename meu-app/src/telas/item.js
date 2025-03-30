@@ -26,8 +26,9 @@ function Itens() {
       .catch((error) => console.error("Erro ao excluir item:", error));
   };
 
+  // Alteração: agora a filtragem é feita pelo código de barras
   const filteredItens = itens.filter((item) =>
-    (item.nome || "").toLowerCase().includes((searchTerm || "").toLowerCase())
+    item.codigo_barras.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
