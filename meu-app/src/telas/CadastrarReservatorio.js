@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
 import useVerificarAutenticacao from "./autenticacao";
@@ -7,11 +7,30 @@ function CadastrarReservatorio() {
   useVerificarAutenticacao();
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    tipoCombustivel: "",
+    tipoCombustivel: "", // aqui será o ID do combustível selecionado
     capacidade: "",
     nivelAtual: "",
     temperatura: "",
   });
+
+  const [combustiveis, setCombustiveis] = useState([]);
+
+  useEffect(() => {
+    async function fetchCombustiveis() {
+      try {
+        const response = await fetch("http://localhost:5000/combustiveis");
+        if (!response.ok) throw new Error("Erro ao buscar combustíveis");
+
+        const data = await response.json();
+        // Caso a API retorne { combustiveis: [...] }
+        setCombustiveis(data.combustiveis);
+      } catch (error) {
+        console.error("Erro:", error);
+      }
+    }
+
+    fetchCombustiveis();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -45,15 +64,57 @@ function CadastrarReservatorio() {
         <form onSubmit={handleSubmit}>
           <fieldset style={styles.fieldset}>
             <legend>Informações do Reservatório</legend>
-            <input type="text" name="tipoCombustivel" placeholder="Tipo de Combustível" value={form.tipoCombustivel} onChange={handleChange} style={styles.input} />
-            <input type="number" name="capacidade" placeholder="Capacidade (L)" value={form.capacidade} onChange={handleChange} style={styles.input} />
-            <input type="number" name="nivelAtual" placeholder="Nível Atual (L)" value={form.nivelAtual} onChange={handleChange} style={styles.input} />
-            <input type="text" name="temperatura" placeholder="Temperatura (°C)" value={form.temperatura} onChange={handleChange} style={styles.input} />
+            {/* Select para tipo de combustível */}
+            <select
+              name="tipoCombustivel"
+              value={form.tipoCombustivel}
+              onChange={handleChange}
+              style={styles.input}
+            >
+              <option value="">Selecione o tipo de combustível</option>
+              {combustiveis.map((combustivel) => (
+                <option key={combustivel.id} value={combustivel.id}>
+                  {combustivel.nome}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              name="capacidade"
+              placeholder="Capacidade (L)"
+              value={form.capacidade}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="number"
+              name="nivelAtual"
+              placeholder="Nível Atual (L)"
+              value={form.nivelAtual}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="temperatura"
+              placeholder="Temperatura (°C)"
+              value={form.temperatura}
+              onChange={handleChange}
+              style={styles.input}
+            />
           </fieldset>
-          
+
           <div style={styles.buttonContainer}>
-            <button type="button" onClick={() => navigate("/reservatorios")} style={styles.voltarButton}>◀ Voltar</button>
-            <button type="submit" style={styles.adicionarButton}>+ Adicionar</button>
+            <button
+              type="button"
+              onClick={() => navigate("/reservatorios")}
+              style={styles.voltarButton}
+            >
+              ◀ Voltar
+            </button>
+            <button type="submit" style={styles.adicionarButton}>
+              + Adicionar
+            </button>
           </div>
         </form>
       </div>
@@ -95,6 +156,6 @@ const styles = {
     borderRadius: "5px",
     cursor: "pointer",
   },
-}
+};
 
 export default CadastrarReservatorio;

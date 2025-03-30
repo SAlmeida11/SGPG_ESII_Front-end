@@ -15,6 +15,8 @@ import Fornecedor from "./telas/fornecedor.js";
 import Itens from "./telas/item.js";
 import CadastrarItem from "./telas/CadastarItem.js";
 import CadastrarFornecedor from "./telas/CadastrarFornecedor.js";
+import Combustivel from "./telas/combustivel.js"
+import CadastrarCombustivel from "./telas/CadastrarCombustivel.js"
 import VisualizarFornecedor from "./telas/VisualizarFornecedor.js";
 import VisualizarCliente from "./telas/VisualizarCliente.js";
 import VisualizarFuncionario from "./telas/VisualizarFuncionario.js";
@@ -32,6 +34,10 @@ function App() {
           <Route path="/cadastrar-fornecedor" element={<CadastrarFornecedor />} />
           <Route path="/cadastrar-funcionario" element={<CadastrarFuncionario />} />
           <Route path="/cadastrar-item" element={<CadastrarItem />} />
+          <Route path="/fornecedores" element={<Fornecedor />} /> 
+          <Route path="/Cadastrar-fornecedor" element={<CadastrarFornecedor />} /> 
+          <Route path="/combustiveis" element={<Combustivel />} />
+          <Route path="/cadastrar-combustivel" element={<CadastrarCombustivel />} />
           <Route path="/cadastrar-reservatorio" element={<CadastrarReservatorio />} />
           <Route path="/cadastrar-servico" element={<CadastrarServico />} />
           <Route path="/clientes" element={<Cliente />} />
@@ -39,6 +45,7 @@ function App() {
           <Route path="/editar-fornecedor" element={<EditarFornecedor />} />
           <Route path="/fornecedores" element={<Fornecedor />} />
           <Route path="/funcionarios" element={<Funcionario />} />
+          <Route path="/clientes" element={<Cliente />} />
           <Route path="/item" element={<Itens />} />
           <Route path="/reservatorios" element={<Reservatorio />} />
           <Route path="/servicos" element={<Servicos />} />
