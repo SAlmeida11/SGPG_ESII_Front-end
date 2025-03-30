@@ -5,7 +5,32 @@ import useVerificarAutenticacao from "./autenticacao";
 
 function Itens() {
   useVerificarAutenticacao();
-  const [itens, setItens] = useState([]);
+  const [itens, setItens] = useState([
+    {
+      id: 1,
+      nome: "Item A",
+      preco: 10.5,
+      quantidade: 5,
+    },
+    {
+      id: 2,
+      nome: "Item B",
+      preco: 25.99,
+      quantidade: 2,
+    },
+    {
+      id: 3,
+      nome: "Item C",
+      preco: 7.75,
+      quantidade: 10,
+    },
+    {
+      id: 4,
+      nome: "Item D",
+      preco: 15.0,
+      quantidade: 1,
+    },
+  ]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 

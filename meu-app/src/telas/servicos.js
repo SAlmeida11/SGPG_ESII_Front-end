@@ -5,7 +5,36 @@ import useVerificarAutenticacao from "./autenticacao";
 
 function Servicos() {
   useVerificarAutenticacao();
-  const [servicos, setServicos] = useState([]);
+  const [servicos, setServicos] = useState([
+    {
+      id: 1,
+      descricao: "Corte de Cabelo",
+      valor: 50.0,
+      tempoEstimado: 30,
+      ativo: true,
+    },
+    {
+      id: 2,
+      descricao: "Manicure",
+      valor: 40.0,
+      tempoEstimado: 45,
+      ativo: true,
+    },
+    {
+      id: 3,
+      descricao: "Massagem Relaxante",
+      valor: 120.0,
+      tempoEstimado: 60,
+      ativo: false,
+    },
+    {
+      id: 4,
+      descricao: "Limpeza de Pele",
+      valor: 80.0,
+      tempoEstimado: 50,
+      ativo: true,
+    },
+  ]);
   const navigate = useNavigate();
 
   useEffect(() => {

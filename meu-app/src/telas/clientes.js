@@ -1,16 +1,45 @@
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
 import useVerificarAutenticacao from "./autenticacao";
 
 import viewIcon from './view.icon.png';
 import editIcon from './editar.icon.png';
 import deleteIcon from './lixeira.icon.png';
+import { IoEyeSharp } from "react-icons/io5";
+import { MdEdit } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
 
 function Cliente() {
   useVerificarAutenticacao();
-  const [clientes, setClientes] = useState([]);
+  const [clientes, setClientes] = useState([
+    {
+      nomeCliente: "João Silva",
+      cpf: "123.456.789-00",
+      dataCadastro: "2024-01-15"
+    },
+    {
+      nomeCliente: "Maria Oliveira",
+      cpf: "987.654.321-00",
+      dataCadastro: "2024-02-20"
+    },
+    {
+      nomeCliente: "Carlos Pereira",
+      cpf: "456.123.789-00",
+      dataCadastro: "2023-12-10"
+    },
+    {
+      nomeCliente: "Ana Souza",
+      cpf: "321.654.987-00",
+      dataCadastro: "2024-03-05"
+    },
+    {
+      nomeCliente: "Fernando Lima",
+      cpf: "741.852.963-00",
+      dataCadastro: "2024-02-28"
+    }
+  ]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
   const navigate = useNavigate();
 
@@ -39,7 +68,9 @@ function Cliente() {
     (cliente.nome || "").toLowerCase().includes((searchTerm || "").toLowerCase()) ||
     (cliente.cpf || "").includes(searchTerm)
   );
-  
+
+  const [dadosVizualizar, setdadosVizualizar] = useState();
+
 
   return (
     <div style={{ display: "flex" }}>
@@ -96,16 +127,34 @@ function Cliente() {
                   <td>{cliente.cpf}</td>
                   <td>{cliente.dataCadastro}</td>
                   <td>
-                      <button style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Visualizar", cliente.cpf)}>
-                          <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "4px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "4px"
+                      }}
+                    >
+                      <Link to="/visualizar-cliente">
+                        <button style={{ backgroundColor: '#A7A7A7', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                          onClick={() => { localStorage.setItem("idCliente", cliente.cpf); }}>
+                          <IoEyeSharp alt="Visualizar" style={styles.icon} />
+                        </button>
+                      </Link>
+
+                      <Link to="/editar-cliente">
+                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => console.log("Editar", cliente.cpf)}>
+                          <MdEdit alt="Editar" style={styles.icon} />
+                        </button>
+                      </Link>
+
+                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirCliente(cliente.cpf)}>
+                        <FaTrash alt="Excluir" style={styles.icon} />
                       </button>
-                      <button style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Editar", cliente.cpf)}>
-                          <img src={editIcon} alt="Editar" style={{ width: '20px', height: '20px' }} />
-                      </button>
-                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => excluirCliente(cliente.cpf)}>
-                          <img src={deleteIcon} alt="Excluir" style={{ width: '20px', height: '20px' }} />
-                      </button>
+                    </div>
                   </td>
+
                 </tr>
               ))
             ) : (
@@ -140,8 +189,12 @@ function Cliente() {
           +
         </button>
       </div>
-    </div>
+    </div >
   );
+}
+
+const styles = {
+  icon: { width: '18px', height: '18px', color: 'white' },
 }
 
 export default Cliente;

@@ -21,6 +21,8 @@ import VisualizarFornecedor from "./telas/VisualizarFornecedor.js";
 import VisualizarCliente from "./telas/VisualizarCliente.js";
 import VisualizarFuncionario from "./telas/VisualizarFuncionario.js";
 import VisualizarItem from "./telas/VisualizarItem.js";
+import EditarCliente from "./telas/EditarCliente.js";
+import EditarFornecedor from "./telas/EditarFornecedor.js";
 
 function App() {
   return (
@@ -38,6 +40,9 @@ function App() {
           <Route path="/cadastrar-combustivel" element={<CadastrarCombustivel />} />
           <Route path="/cadastrar-reservatorio" element={<CadastrarReservatorio />} />
           <Route path="/cadastrar-servico" element={<CadastrarServico />} />
+          <Route path="/clientes" element={<Cliente />} />
+          <Route path="/editar-cliente" element={<EditarCliente />} />
+          <Route path="/editar-fornecedor" element={<EditarFornecedor />} />
           <Route path="/fornecedores" element={<Fornecedor />} />
           <Route path="/funcionarios" element={<Funcionario />} />
           <Route path="/clientes" element={<Cliente />} />
