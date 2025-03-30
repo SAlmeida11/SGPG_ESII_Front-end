@@ -4,7 +4,7 @@ import Sidebar from "./menu.js";
 import useVerificarAutenticacao from "./autenticacao";
 
 function Venda() {
-
+  useVerificarAutenticacao();
   const [cpf, setCpf] = useState("");
   const [formaPagamento, setFormaPagamento] = useState("");
   const navigate = useNavigate();
