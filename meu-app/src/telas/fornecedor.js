@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
 import useVerificarAutenticacao from "./autenticacao";
 
@@ -7,10 +7,39 @@ import viewIcon from './view.icon.png';
 import editIcon from './editar.icon.png';
 import deleteIcon from './lixeira.icon.png';
 import boxIcon from './box.icon.png';
+import { FaPowerOff } from "react-icons/fa6";
+import { IoEyeSharp } from "react-icons/io5";
+import { BsBoxSeam, BsBoxSeamFill, BsFillBoxSeamFill } from "react-icons/bs";
+import { MdEdit } from "react-icons/md";
 
 function Fornecedor() {
-  useVerificarAutenticacao();
-  const [fornecedores, setFornecedores] = useState([]);
+
+  const [fornecedores, setFornecedores] = useState([
+    {
+      NomeFor: "Fornecedor 1",
+      cnpj: "00.000.000/0001-00",
+      telefone: "(11) 99999-9999",
+      Status: "Ativo",
+    },
+    {
+      NomeFor: "Fornecedor 2",
+      cnpj: "11.111.111/1111-11",
+      telefone: "(21) 98888-8888",
+      Status: "Inativo",
+    },
+    {
+      NomeFor: "Fornecedor 3",
+      cnpj: "22.222.222/2222-22",
+      telefone: "(31) 97777-7777",
+      Status: "Ativo",
+    },
+    {
+      NomeFor: "Fornecedor 4",
+      cnpj: "33.333.333/3333-33",
+      telefone: "(41) 96666-6666",
+      Status: "Ativo",
+    },
+  ]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
   const navigate = useNavigate();
 
@@ -111,26 +140,50 @@ function Fornecedor() {
                     </span>
                   </td>
                   <td>
-                      <button style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Visualizar", fornecedor.cnpj)}>
-                          <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
-                      </button>
-                      <button style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => console.log("Editar", fornecedor.cnpj)}>
-                          <img src={editIcon} alt="Editar" style={{ width: '20px', height: '20px' }} />
-                      </button>
+                    <div style={{
+                      display: "flex",
+                      gap: "4px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: "4px"
+
+                    }}>
+                      <Link to="/visualizar-fornecedor" >
+                        <button style={{ backgroundColor: '#A7A7A7', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => console.log("Visualizar", fornecedor.cnpj)}>
+                          <IoEyeSharp
+                            alt="Visualizar" style={styles.icon} />
+                        </button>
+                      </Link>
+                      <Link to="/editar-fornecedor" >
+                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => console.log("Editar", fornecedor.cnpj)}>
+                          <MdEdit
+                            alt="Editar" style={styles.icon} />
+                        </button>
+                      </Link>
                       {fornecedor.Status.toLowerCase() === "ativo" && (
-                        <button 
-                          style={{ backgroundColor: '#008000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }} 
+                        <button
+                          style={{ backgroundColor: '#008000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
                           onClick={() => {
                             navigate("/solicitar-compra");
-                            console.log("Solicitar Compra", fornecedor.cnpj);
                           }}
                         >
-                          <img src={boxIcon} alt="Solicitar Compra" style={{ width: '20px', height: '20px' }} />
+                          <BsFillBoxSeamFill
+                            alt="Solicitar Compra" style={styles.icon} />
                         </button>
                       )}
-                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}} onClick={() => excluirFornecedor(fornecedor.cnpj)}>
-                          <img src={deleteIcon} alt="Excluir" style={{ width: '20px', height: '20px' }} />
-                      </button>
+                      {(fornecedor.Status.toLowerCase() === "ativo") ? (
+                        <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirFornecedor(fornecedor.cnpj)}>
+                          {/* <img src={deleteIcon} alt="Excluir" style={{ width: '18px', height: '18px' }} /> */}
+                          <FaPowerOff style={styles.icon} />
+                        </button>
+                      ) : (
+                        <button style={{ backgroundColor: 'green', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirFornecedor(fornecedor.cnpj)}>
+                          {/* <img src={deleteIcon} alt="Excluir" style={{ width: '18px', height: '18px' }} /> */}
+                          <FaPowerOff style={styles.icon} />
+                        </button>
+                      )}
+
+                    </div>
                   </td>
                 </tr>
               ))
@@ -170,4 +223,9 @@ function Fornecedor() {
   );
 }
 
+const styles = {
+  icon: { width: '18px', height: '18px', color: 'white' },
+}
+
 export default Fornecedor;
+

@@ -21,9 +21,15 @@ function CadastrarCliente() {
     email: "",
   });
 
+
   // Função para atualizar os campos do formulário
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    // Se o campo alterado for o CEP e tiver 8 dígitos, buscar endereço
+    if (name === "cep" && value.length === 8) {
+      buscarEndereco(value);
+    }
   };
 
   // Função para enviar os dados do cliente para a API
@@ -44,6 +50,29 @@ function CadastrarCliente() {
       }
     } catch (error) {
       console.error("Erro ao cadastrar cliente:", error);
+    }
+  };
+
+  // Função para buscar endereço pelo ViaCEP
+  const buscarEndereco = async (cep) => {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+
+      if (!data.erro) {
+        setForm((prevForm) => ({
+          ...prevForm,
+          logradouro: data.logradouro || "",
+          bairro: data.bairro || "",
+          cidade: data.localidade || "",
+          estado: data.uf || "",
+        }));
+      } else {
+        alert("CEP não encontrado!");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar endereço:", error);
+      alert("Erro ao buscar o CEP. Tente novamente.");
     }
   };
 

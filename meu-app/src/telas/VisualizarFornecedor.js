@@ -107,6 +107,9 @@ const styles = {
     marginBottom: "15px",
     borderRadius: "8px",
     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "15px",
   },
   input: {
     width: "45%",

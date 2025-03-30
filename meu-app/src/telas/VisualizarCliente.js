@@ -1,28 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "./menu.js";
+import verificarId from "./idLocalStorage.js";
+import useVerificarAutenticacao from "./autenticacao.js";
+
+
+
 
 function VisualizarCliente() {
+    // const idCliente = verificarId('idCliente');
+    useVerificarAutenticacao();
+
+    const idCliente = 1;
     const navigate = useNavigate();
     const [form, setForm] = useState({
-        nome: "",
-        cpf: "",
-        dataNascimento: "",
-        cep: "",
-        cidade: "",
-        estado: "",
-        logradouro: "",
-        bairro: "",
-        numero: "",
-        telefone: "",
-        email: "",
+        nome: "João Silva",
+        cpf: "123.456.789-00",
+        dataNascimento: "1990-05-12",
+        cep: "01001-000",
+        cidade: "São Paulo",
+        estado: "SP",
+        logradouro: "Rua das Flores",
+        bairro: "Centro",
+        numero: "123",
+        telefone: "(11) 98765-4321",
+        email: "joao.silva@email.com"
     });
 
     // Carregar os dados do cliente ao montar o componente
     useEffect(() => {
         async function fetchCliente() {
             try {
-                const response = await fetch("http://localhost:5000/clientes/1"); // Exemplo de URL
+                const response = await fetch(`http://localhost:5000/clientes?cpfCliente=${idCliente}`); // Exemplo de URL
                 const data = await response.json();
                 setForm({
                     nome: data.nome || "",
@@ -79,7 +88,10 @@ function VisualizarCliente() {
 
                 {/* Botão de Voltar */}
                 <div style={styles.buttonContainer}>
-                    <button type="button" onClick={() => navigate(-1)} style={styles.voltarButton}>
+                    <button type="button" onClick={() => {
+                        navigate(-1)
+                        localStorage.removeItem('idCliente');
+                    }} style={styles.voltarButton}>
                         ◀ Voltar
                     </button>
                 </div>
@@ -94,6 +106,8 @@ const styles = {
         padding: "10px",
         marginBottom: "15px",
         borderRadius: "5px",
+        gap: "15px",
+
     },
     input: {
         width: "30%",
@@ -101,7 +115,7 @@ const styles = {
         margin: "5px",
         border: "1px solid #ccc",
         borderRadius: "5px",
-        backgroundColor: "#f5f5f5", // Deixa claro que os campos são apenas de leitura
+        backgroundColor: "#f5f5f5",
         color: "#555",
     },
     buttonContainer: {

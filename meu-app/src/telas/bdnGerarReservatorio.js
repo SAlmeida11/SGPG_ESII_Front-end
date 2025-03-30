@@ -5,7 +5,36 @@ import useVerificarAutenticacao from "./autenticacao";
 
 function Reservatorios() {
   useVerificarAutenticacao();
-  const [reservatorios, setReservatorios] = useState([]);
+  const [reservatorios, setReservatorios] = useState([
+    {
+      id: 1,
+      tipoCombustivel: "Gasolina",
+      capacidade: 5000,
+      nivelAtual: 3200,
+      temperatura: 25,
+    },
+    {
+      id: 2,
+      tipoCombustivel: "Diesel",
+      capacidade: 8000,
+      nivelAtual: 5000,
+      temperatura: 22,
+    },
+    {
+      id: 3,
+      tipoCombustivel: "Etanol",
+      capacidade: 6000,
+      nivelAtual: 4500,
+      temperatura: 27,
+    },
+    {
+      id: 4,
+      tipoCombustivel: "Querosene",
+      capacidade: 7000,
+      nivelAtual: 6000,
+      temperatura: 24,
+    },
+  ]);
   const navigate = useNavigate();
 
   // Buscar reservatórios da API

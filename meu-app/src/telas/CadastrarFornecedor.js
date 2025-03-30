@@ -116,7 +116,7 @@ const styles = {
     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
     display: "flex",
     flexWrap: "wrap",
-    gap: "15px", // Espaço entre os elementos
+    gap: "15px",
   },
   input: {
     width: "45%",
