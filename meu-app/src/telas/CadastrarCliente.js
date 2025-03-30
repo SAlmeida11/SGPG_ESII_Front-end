@@ -10,7 +10,8 @@ function CadastrarCliente() {
   const [form, setForm] = useState({
     nome: "",
     cpf: "",
-    dataNascimento: "",
+    dataCadastro: "",
+    tipo: "",
     cep: "",
     cidade: "",
     estado: "",
@@ -58,7 +59,8 @@ function CadastrarCliente() {
             <legend>Informações Pessoais</legend>
             <input type="text" name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} style={styles.input} />
             <input type="text" name="cpf" placeholder="CPF" value={form.cpf} onChange={handleChange} style={styles.input} />
-            <input type="date" name="dataNascimento" placeholder="Data de Nascimento" value={form.dataNascimento} onChange={handleChange} style={styles.input} />
+            <input type="text" name="tipo" placeholder="Tipo" value={form.tipo} onChange={handleChange} style={styles.input} />
+            <input type="date" name="dataCadastro" placeholder="Data de Nascimento" value={form.dataCadastro} onChange={handleChange} style={styles.input} />
           </fieldset>
 
           {/* Seção: Endereço */}
