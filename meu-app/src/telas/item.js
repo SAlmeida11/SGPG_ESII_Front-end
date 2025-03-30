@@ -1,49 +1,28 @@
-import React, { useState, useEffect, use } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom"; // Importando Link corretamente
 import Sidebar from "./menu.js";
 import useVerificarAutenticacao from "./autenticacao";
 
+import { FaPowerOff } from "react-icons/fa6";
+import { IoEyeSharp } from "react-icons/io5";
+import { MdEdit } from "react-icons/md";
+
 function Itens() {
   useVerificarAutenticacao();
-  const [itens, setItens] = useState([
-    {
-      id: 1,
-      nome: "Item A",
-      preco: 10.5,
-      quantidade: 5,
-    },
-    {
-      id: 2,
-      nome: "Item B",
-      preco: 25.99,
-      quantidade: 2,
-    },
-    {
-      id: 3,
-      nome: "Item C",
-      preco: 7.75,
-      quantidade: 10,
-    },
-    {
-      id: 4,
-      nome: "Item D",
-      preco: 15.0,
-      quantidade: 1,
-    },
-  ]);
+  const [itens, setItens] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/itens")
+    fetch("http://localhost:5000/item")
       .then((response) => response.json())
-      .then((data) => setItens(data))
+      .then((data) => setItens(data.itens))
       .catch((error) => console.error("Erro ao buscar itens:", error));
   }, []);
 
-  const excluirItem = (id) => {
-    fetch(`http://localhost:5000/itens/${id}`, { method: "DELETE" })
-      .then(() => setItens(itens.filter((item) => item.id !== id)))
+  const excluirItem = (codigo_barras) => {
+    fetch(`http://localhost:5000/item/${codigo_barras}`, { method: "DELETE" })
+      .then(() => setItens(itens.filter((item) => item.codigo_barras !== codigo_barras)))
       .catch((error) => console.error("Erro ao excluir item:", error));
   };
 
@@ -76,28 +55,71 @@ function Itens() {
           <thead>
             <tr style={{ backgroundColor: "#800000", color: "white" }}>
               <th>Nome</th>
-              <th>Preço</th>
-              <th>Quantidade</th>
+              <th>Categoria</th>
+              <th>Código de Barras</th>
+              <th>Preço Unitário</th>
+              <th>Quantidade Disponível</th>
               <th>Ação</th>
             </tr>
           </thead>
           <tbody>
             {filteredItens.length > 0 ? (
               filteredItens.map((item) => (
-                <tr key={item.id}>
+                <tr key={item.codigo_barras}>
                   <td>{item.nome}</td>
-                  <td>R$ {item.preco.toFixed(2)}</td>
-                  <td>{item.quantidade}</td>
+                  <td>{item.categoria}</td>
+                  <td>{item.codigo_barras}</td>
+                  <td>R$ {item.preco_unitario.toFixed(2)}</td>
+                  <td>{item.quantidade_disponivel}</td>
                   <td>
-                    <button onClick={() => console.log("Editar", item.id)}>✏️</button>
-                    <button onClick={() => console.log("Visualizar", item.id)}>👁️</button>
-                    <button onClick={() => excluirItem(item.id)}>🗑️</button>
+                    <Link to="/visualizar-item">
+                      <button
+                        style={{
+                          backgroundColor: "#A7A7A7",
+                          border: "none",
+                          padding: "8px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          marginRight: '5px'
+                        }}
+                        onClick={() => console.log("Visualizar", item.codigo_barras)}
+                      >
+                        <IoEyeSharp alt="Visualizar" style={styles.icon} />
+                      </button>
+                    </Link>
+                    <Link to="/editar-item">
+                      <button
+                        style={{
+                          backgroundColor: "#DFB408",
+                          border: "none",
+                          padding: "8px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          marginRight: '5px'
+                        }}
+                        onClick={() => console.log("Editar", item.codigo_barras)}
+                      >
+                        <MdEdit alt="Editar" style={styles.icon} />
+                      </button>
+                    </Link>
+                    <button
+                      style={{
+                        backgroundColor: "green",
+                        border: "none",
+                        padding: "8px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => excluirItem(item.codigo_barras)}
+                    >
+                      <FaPowerOff style={styles.icon} />
+                    </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4">Nenhum item encontrado.</td>
+                <td colSpan="6">Nenhum item encontrado.</td>
               </tr>
             )}
           </tbody>
@@ -127,6 +149,10 @@ function Itens() {
       </div>
     </div>
   );
+}
+
+const styles = {
+  icon: { width: '18px', height: '18px', color: 'white' },
 }
 
 export default Itens;
