@@ -14,11 +14,9 @@ function Venda() {
   const [cpf, setCpf] = useState("");
   const [formaPagamento, setFormaPagamento] = useState("");
   const [itens, setItens] = useState([]); // Itens que vêm da API
-  const [combustiveis, setCombustiveis] = useState([]);
   const [itensSelecionados, setItensSelecionados] = useState([]);
   const [mostrarProdutos, setMostrarProdutos] = useState(false);
-  const [mostrarCombustivel, setMostrarCombustivel] = useState(false);
-  const navigate = useNavigate();
+
 
   const criarPagamento = async (formaPagamento, valorTotal) => {
     const pagamento = {
@@ -199,7 +197,6 @@ function Venda() {
             </button>
             <button
               style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
-              onClick={() => setMostrarProdutos(true)} // Abre a lista de produtos
             >
               <FaGasPump alt="Combustivel" style={{ width: '100px', height: '100px' }} />
 
@@ -247,27 +244,7 @@ function Venda() {
               </table>
             </div>
           )}
-          {mostrarCombustivel && (
-            combustiveis.map((combustivel) => (
-              <tr key={combustivel.id}>
-                <td>{combustivel.nome}</td>
-                <td>{`R$ ${combustivel.preco_litro.toFixed(2)}`}</td>
-                <td>
-                  <input type="number" min="1" defaultValue="1" style={{ width: "60px", textAlign: "center" }} id={`quantidade-${item.codigo_barras}`} />
-                </td>
-                <td>
-                  <button onClick={() => {
-                    const quantidade = parseInt(document.getElementById(`quantidade-${item.codigo_barras}`).value, 10);
-                    adicionarItem(item, quantidade);
-                  }}>
-                    Adicionar
-                  </button>
-                </td>
-              </tr>
-            ))
 
-
-          )}
 
           <div style={{ marginTop: "20px", border: "1px solid #ccc", padding: "10px", borderRadius: '5px', backgroundColor: '#d3d3d3' }}>
             <h2>Informações do Cliente</h2>

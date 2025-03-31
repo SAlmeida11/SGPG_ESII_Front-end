@@ -21,8 +21,6 @@ function EditarCliente() {
         logradouro: "",
         bairro: "",
         numero: "",
-        telefone: "",
-        email: ""
     });
 
     useEffect(() => {
@@ -141,11 +139,11 @@ function EditarCliente() {
                     </fieldset>
 
                     {/* Seção: Contato */}
-                    <fieldset style={styles.fieldset}>
+                    {/* <fieldset style={styles.fieldset}>
                         <legend>Contato</legend>
                         <input type="text" name="telefone" placeholder="Telefone" value={form.telefone} onChange={handleChange} style={styles.input} />
                         <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} style={styles.input} />
-                    </fieldset>
+                    </fieldset> */}
 
                     {/* Botões */}
                     <div style={styles.buttonContainer}>

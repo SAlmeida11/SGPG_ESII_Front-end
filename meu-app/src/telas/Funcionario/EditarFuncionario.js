@@ -10,7 +10,6 @@ function EditarFuncionario() {
     const navigate = useNavigate();
     const idFuncionario = useIdFromLocalStorage('idFuncionario');
 
-
     const [form, setForm] = useState({
         nome: "",
         cpf: "",
@@ -20,8 +19,6 @@ function EditarFuncionario() {
         estado: "",
         logradouro: "",
         numero: "",
-        telefone: "",
-        email: "",
         dataContratacao: "",
         salario: "",
         administrador: "NAO",
@@ -133,15 +130,8 @@ function EditarFuncionario() {
                         <input type="text" name="numero" value={form.numero} onChange={handleChange} style={styles.input} />
                     </fieldset>
 
-                    {/* Seção: Contato */}
-                    <fieldset style={styles.fieldset}>
-                        <legend>Contato</legend>
-                        <input type="text" name="telefone" value={form.telefone} onChange={handleChange} style={styles.input} />
-                        <input type="email" name="email" value={form.email} onChange={handleChange} style={styles.input} />
-                    </fieldset>
-
                     {/* Seção: Contrato */}
-                    <fieldset style={styles.fieldset}>
+                    {/* <fieldset style={styles.fieldset}>
                         <legend>Contrato</legend>
                         <input type="date" name="dataContratacao" value={form.dataContratacao} onChange={handleChange} style={styles.input} />
                         <input type="number" name="salario" value={form.salario} onChange={handleChange} style={styles.input} />
@@ -149,7 +139,7 @@ function EditarFuncionario() {
                             <option value="NAO">Padrão</option>
                             <option value="SIM">Administrador</option>
                         </select>
-                    </fieldset>
+                    </fieldset> */}
 
                     {/* Botão de Voltar */}
                     <div style={styles.buttonContainer}>

@@ -19,8 +19,8 @@ function VisualizarFuncionario() {
         estado: "",
         logradouro: "",
         numero: "",
-        telefone: "",
-        email: "",
+        /* telefone: "",
+        email: "", */
         dataContratacao: "",
         salario: "",
         administrador: "NAO",
@@ -70,11 +70,11 @@ function VisualizarFuncionario() {
                     </fieldset>
 
                     {/* Seção: Contato */}
-                    <fieldset style={styles.fieldset}>
+                    {/* <fieldset style={styles.fieldset}>
                         <legend>Contato</legend>
                         <input type="text" name="telefone" value={form.telefone} disabled style={styles.input} />
                         <input type="email" name="email" value={form.email} disabled style={styles.input} />
-                    </fieldset>
+                    </fieldset> */}
 
                     {/* Seção: Contrato */}
                     <fieldset style={styles.fieldset}>

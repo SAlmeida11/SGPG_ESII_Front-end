@@ -11,12 +11,12 @@ import { formatarData } from "../../func/data.js";
 function Funcionario() {
   useVerificarAutenticacao();
   const [funcionarios, setFuncionarios] = useState([
-    {
+    /* {
       "nomeFun": "Carlos Silva",
       "cpf": "123.456.789-00",
       "dtNascimento": "1985-06-15",
       "admin": 1
-    }
+    } */
   ]);
   const navigate = useNavigate(); // Hook para navegação
 

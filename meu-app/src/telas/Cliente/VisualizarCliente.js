@@ -20,8 +20,8 @@ function VisualizarCliente() {
         logradouro: "",
         bairro: "",
         numero: "",
-        telefone: "",
-        email: "",
+        /* telefone: "",
+        email: "", */
     });
 
 
@@ -79,11 +79,11 @@ function VisualizarCliente() {
                 </fieldset>
 
                 {/* Seção: Contato */}
-                <fieldset style={styles.fieldset}>
+                {/* <fieldset style={styles.fieldset}>
                     <legend>Contato</legend>
                     <input type="text" name="telefone" disabled value={form.telefone} style={styles.input} />
                     <input type="email" name="email" disabled value={form.email} style={styles.input} />
-                </fieldset>
+                </fieldset> */}
 
                 {/* Botão de Voltar */}
                 <div style={styles.buttonContainer}>
