@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
-import Funcionario from "./funcionario.js";
 import useVerificarAutenticacao from "./autenticacao";
 
 function CadastrarFuncionario() {
@@ -11,25 +10,31 @@ function CadastrarFuncionario() {
     nome: "",
     cpf: "",
     dataNascimento: "",
-    cep: "",
-    cidade: "",
-    estado: "",
     logradouro: "",
     numero: "",
-    telefone: "",
-    email: "",
-    dataContratacao: "",
+    cidade: "",
+    estado: "",
+    cep: "",
+    dtContratacao: "",
     salario: "",
   });
 
-  // Função para atualizar os campos do formulário
+  // Atualiza os campos do formulário
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, type } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "number" ? Number(value) : value,
+    }));
   };
 
-  // Função para enviar os dados do funcionário para a API
+  // Enviar os dados do funcionário para a API
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    console.log("Enviando dados:", JSON.stringify(form)); // Debug
+
     try {
       const response = await fetch("http://localhost:5000/cadfuncionarios", {
         method: "POST",
@@ -37,14 +42,17 @@ function CadastrarFuncionario() {
         body: JSON.stringify(form),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         alert("Funcionário cadastrado com sucesso!");
-        navigate("/"); // Volta para a tela de funcionários
+        navigate("/");
       } else {
-        alert("Erro ao cadastrar funcionário.");
+        alert("Erro ao cadastrar funcionário: " + (data.mensagem || "Verifique os dados enviados."));
       }
     } catch (error) {
       console.error("Erro ao cadastrar funcionário:", error);
+      alert("Erro de conexão com o servidor.");
     }
   };
 
@@ -54,46 +62,29 @@ function CadastrarFuncionario() {
       <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
         <h1>Cadastrar Funcionário</h1>
         <form onSubmit={handleSubmit}>
-          {/* Seção: Informações Pessoais */}
+          {/* Informações Pessoais */}
           <fieldset style={styles.fieldset}>
             <legend>Informações Pessoais</legend>
-            <input type="text" name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} style={styles.input} />
-            <input type="text" name="cpf" placeholder="CPF" value={form.cpf} onChange={handleChange} style={styles.input} />
-            <input type="date" name="dataNascimento" placeholder="Data de Nascimento" value={form.dataNascimento} onChange={handleChange} style={styles.input} />
+            <input type="text" name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} style={styles.input} required />
+            <input type="text" name="cpf" placeholder="CPF (123.456.789-00)" value={form.cpf} onChange={handleChange} style={styles.input} required />
+            <input type="date" name="dataNascimento" value={form.dataNascimento} onChange={handleChange} style={styles.input} required />
           </fieldset>
 
-          {/* Seção: Endereço */}
+          {/* Endereço */}
           <fieldset style={styles.fieldset}>
             <legend>Endereço</legend>
-            <input type="text" name="cep" placeholder="CEP" value={form.cep} onChange={handleChange} style={styles.input} />
-            <input type="text" name="cidade" placeholder="Cidade" value={form.cidade} onChange={handleChange} style={styles.input} />
-            <input type="text" name="estado" placeholder="Estado" value={form.estado} onChange={handleChange} style={styles.input} />
-            <input type="text" name="logradouro" placeholder="Logradouro" value={form.logradouro} onChange={handleChange} style={styles.input} />
-            <input type="text" name="bairro" placeholder="Bairro" value={form.bairro} onChange={handleChange} style={styles.input} />
-            <input type="text" name="numero" placeholder="Número" value={form.numero} onChange={handleChange} style={styles.input} />
+            <input type="text" name="logradouro" placeholder="Logradouro" value={form.logradouro} onChange={handleChange} style={styles.input} required />
+            <input type="number" name="numero" placeholder="Número" value={form.numero} onChange={handleChange} style={styles.input} required />
+            <input type="text" name="cidade" placeholder="Cidade" value={form.cidade} onChange={handleChange} style={styles.input} required />
+            <input type="text" name="estado" placeholder="Estado (SP, RJ...)" value={form.estado} onChange={handleChange} style={styles.input} required />
+            <input type="text" name="cep" placeholder="CEP (xxxxx-xxx)" value={form.cep} onChange={handleChange} style={styles.input} required />
           </fieldset>
 
-          {/* Seção: Contato */}
-          <fieldset style={styles.fieldset}>
-            <legend>Contato</legend>
-            <input type="text" name="telefone" placeholder="Telefone" value={form.telefone} onChange={handleChange} style={styles.input} />
-            <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} style={styles.input} />
-          </fieldset>
-
-          {/* Seção: Contrato */}
+          {/* Contrato */}
           <fieldset style={styles.fieldset}>
             <legend>Contrato</legend>
-            <input type="date" name="dataContratacao" placeholder="Data de Contratação" value={form.dataContratacao} onChange={handleChange} style={styles.input} />
-            <input type="number" name="salario" placeholder="Salário" value={form.salario} onChange={handleChange} style={styles.input} />
-            <select
-              name="administrador"
-              value={form.status}
-              onChange={handleChange}
-              style={styles.input}
-            >
-              <option value="NAO">Padrão</option>
-              <option value="SIM">Administrador</option>
-            </select>
+            <input type="date" name="dtContratacao" value={form.dtContratacao} onChange={handleChange} style={styles.input} required />
+            <input type="number" name="salario" placeholder="Salário" value={form.salario} onChange={handleChange} style={styles.input} required />
           </fieldset>
 
           {/* Botões */}
@@ -141,6 +132,6 @@ const styles = {
     borderRadius: "5px",
     cursor: "pointer",
   },
-}
+};
 
 export default CadastrarFuncionario;

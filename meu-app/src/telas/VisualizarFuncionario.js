@@ -6,7 +6,7 @@ import useVerificarAutenticacao from "./autenticacao";
 function VisualizarFuncionario() {
     useVerificarAutenticacao();
     const navigate = useNavigate();
-    const { id } = useParams(); // Obtém o ID do funcionário pela URL
+    const { cpf } = useParams(); // Obtém o CPF do funcionário pela URL
 
     const [form, setForm] = useState({
         nome: "",
@@ -28,20 +28,42 @@ function VisualizarFuncionario() {
     useEffect(() => {
         async function fetchFuncionario() {
             try {
-                const response = await fetch(`http://localhost:5000/funcionarios/${id}`);
+                console.log(`Buscando funcionário com CPF: ${cpf}`);
+                const response = await fetch(`http://localhost:5000/funcionarios/${cpf}`);
+    
                 if (response.ok) {
                     const data = await response.json();
-                    setForm(data);
-                } else {
+                    console.log("Dados recebidos da API:", data);
+                
+                    setForm({
+                        nome: data.nomeFun || "",  // Nome do funcionário
+                        cpf: data.cpf || "",
+                        dataNascimento: data.dtNascimento ? new Date(data.dtNascimento).toISOString().split("T")[0] : "",
+                        cep: "", // Adicionar quando houver na API
+                        cidade: "", // Adicionar quando houver na API
+                        estado: "", // Adicionar quando houver na API
+                        logradouro: "", // Adicionar quando houver na API
+                        numero: "", // Adicionar quando houver na API
+                        telefone: "", // Adicionar quando houver na API
+                        email: "", // Adicionar quando houver na API
+                        dataContratacao: "", // Adicionar quando houver na API
+                        salario: "", // Adicionar quando houver na API
+                        administrador: data.admin === 1 ? "SIM" : "NAO",
+                    });
+                }
+                 else {
+                    console.error("Erro ao carregar os dados do funcionário:", response.status);
                     alert("Erro ao carregar os dados do funcionário.");
-                    navigate("/funcionarios"); // Redireciona em caso de erro
+                    navigate("/funcionarios"); 
                 }
             } catch (error) {
                 console.error("Erro ao buscar funcionário:", error);
             }
         }
         fetchFuncionario();
-    }, [id, navigate]);
+    }, [cpf, navigate]);
+    
+    
 
     return (
         <div style={{ display: "flex" }}>
@@ -116,7 +138,7 @@ const styles = {
         borderRadius: "8px",
         fontSize: "16px",
         boxSizing: "border-box",
-        backgroundColor: "#f5f5f5", // Fundo cinza para indicar campo desabilitado
+        backgroundColor: "#f5f5f5",
     },
     buttonContainer: {
         display: "flex",
