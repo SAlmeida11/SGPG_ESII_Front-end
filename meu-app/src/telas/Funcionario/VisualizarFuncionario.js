@@ -6,7 +6,7 @@ import useVerificarAutenticacao from "./autenticacao";
 function VisualizarFuncionario() {
     useVerificarAutenticacao();
     const navigate = useNavigate();
-    const { cpf } = useParams(); // Obtém o CPF do funcionário pela URL
+    const { cpf } = useParams();
 
     const [form, setForm] = useState({
         nome: "",
@@ -17,8 +17,8 @@ function VisualizarFuncionario() {
         estado: "",
         logradouro: "",
         numero: "",
-        telefone: "",
-        email: "",
+        telefone: "", // Não presente na API
+        email: "", // Não presente na API
         dataContratacao: "",
         salario: "",
         administrador: "NAO",
@@ -36,22 +36,21 @@ function VisualizarFuncionario() {
                     console.log("Dados recebidos da API:", data);
                 
                     setForm({
-                        nome: data.nomeFun || "",  // Nome do funcionário
+                        nome: data.nomeFun || "",
                         cpf: data.cpf || "",
                         dataNascimento: data.dtNascimento ? new Date(data.dtNascimento).toISOString().split("T")[0] : "",
-                        cep: "", // Adicionar quando houver na API
-                        cidade: "", // Adicionar quando houver na API
-                        estado: "", // Adicionar quando houver na API
-                        logradouro: "", // Adicionar quando houver na API
-                        numero: "", // Adicionar quando houver na API
-                        telefone: "", // Adicionar quando houver na API
-                        email: "", // Adicionar quando houver na API
-                        dataContratacao: "", // Adicionar quando houver na API
-                        salario: "", // Adicionar quando houver na API
+                        cep: data.endereco?.cep || "",
+                        cidade: data.endereco?.cidade || "",
+                        estado: data.endereco?.estado || "",
+                        logradouro: data.endereco?.logradouro || "",
+                        numero: data.endereco?.numero?.toString() || "",
+                        telefone: "", // Ainda não disponível na API
+                        email: "", // Ainda não disponível na API
+                        dataContratacao: data.vinculo?.dtContratacao ? new Date(data.vinculo.dtContratacao).toISOString().split("T")[0] : "",
+                        salario: data.vinculo?.salario?.toString() || "",
                         administrador: data.admin === 1 ? "SIM" : "NAO",
                     });
-                }
-                 else {
+                } else {
                     console.error("Erro ao carregar os dados do funcionário:", response.status);
                     alert("Erro ao carregar os dados do funcionário.");
                     navigate("/funcionarios"); 
