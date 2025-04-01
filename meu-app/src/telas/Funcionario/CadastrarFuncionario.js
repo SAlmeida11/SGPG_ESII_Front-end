@@ -46,7 +46,7 @@ function CadastrarFuncionario() {
 
       if (response.ok) {
         alert("Funcionário cadastrado com sucesso!");
-        navigate("/funcionarios");
+        navigate("/");
       } else {
         alert("Erro ao cadastrar funcionário: " + (data.mensagem || "Verifique os dados enviados."));
       }
