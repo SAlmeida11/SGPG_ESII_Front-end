@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Importa a navegação
+import { useNavigate } from "react-router-dom";
 import Sidebar from "./menu.js";
 import useVerificarAutenticacao from "./autenticacao";
 
@@ -9,35 +9,74 @@ import deleteIcon from './lixeira.icon.png';
 
 function Funcionario() {
   useVerificarAutenticacao();
-  const [funcionarios, setFuncionarios] = useState('')
-  const navigate = useNavigate(); // Hook para navegação
+  const [funcionarios, setFuncionarios] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
-  // Função para buscar funcionários da API
   useEffect(() => {
     fetch("http://localhost:5000/funcionarios")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data); // Log para verificar os dados retornados
         setFuncionarios(data);
       })
       .catch((error) => console.error("Erro ao buscar funcionários:", error));
   }, []);
 
-  // Função para excluir funcionário
   const excluirFuncionario = (cpf) => {
-    fetch("http://localhost:5000/funcionarios/${cpf}", { method: "DELETE" })
+    fetch(`http://localhost:5000/delete-funcionario/${cpf}`, { method: "DELETE" })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao excluir funcionário.");
+        }
+        return response.json();
+      })
       .then(() => {
         setFuncionarios(funcionarios.filter((f) => f.cpf !== cpf));
+        alert("Funcionário excluído com sucesso!");
       })
       .catch((error) => console.error("Erro ao excluir funcionário:", error));
   };
+
+  // Aplicando o filtro pelo CPF
+  const funcionariosFiltrados = funcionarios.filter((funcionario) =>
+    funcionario.cpf.startsWith(searchTerm)
+  );
 
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
       <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
-        <h1>FUNCIONÁRIOS</h1>
-        <table border="1" style={{ width: "100%", marginTop: "20px", textAlign: "center" }}>
+        <h1 style={{ display: "inline-block" }}>FUNCIONÁRIOS</h1>
+        <div style={{ display: "inline-block", float: "right", marginTop: "20px" }}>
+          <input
+            type="text"
+            placeholder="Buscar"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: "5px 20px",
+              fontSize: "14px",
+              borderRadius: "20px",
+              border: "1px solid #ccc",
+              marginRight: "10px",
+            }}
+          />
+          <button
+            style={{
+              padding: "5px 10px",
+              backgroundColor: "none",
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              cursor: "pointer",
+            }}
+            onClick={() => console.log("Buscar:", searchTerm)}
+          >
+            🔍
+          </button>
+        </div>
+
+        <table border="1" style={{ width: "100%", marginTop: "10px", textAlign: "center" }}>
           <thead>
             <tr style={{ backgroundColor: "#800000", color: "white" }}>
               <th>Nome</th>
@@ -48,25 +87,32 @@ function Funcionario() {
             </tr>
           </thead>
           <tbody>
-            {funcionarios.length > 0 ? (
-              funcionarios.map((funcionario) => (
+            {funcionariosFiltrados.length > 0 ? (
+              funcionariosFiltrados.map((funcionario) => (
                 <tr key={funcionario.cpf}>
                   <td>{funcionario.nomeFun}</td>
                   <td>{funcionario.cpf}</td>
                   <td>{funcionario.dtNascimento}</td>
                   <td>{funcionario.admin === 1 ? "Sim" : "Não"}</td>
                   <td>
-                  <button
-                    style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
-                    onClick={() => navigate(`/visualizar-funcionario/${funcionario.cpf}`)}
-                  >
-                    <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
-                  </button>
+                    <button
+                      style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
+                      onClick={() => navigate(`/visualizar-funcionario/${funcionario.cpf}`)}
+                    >
+                      <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
+                    </button>
 
-                    <button style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => console.log("Editar", funcionario.cpf)}>
+                    <button
+                      style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
+                      onClick={() => navigate(`/editar-funcionario/${funcionario.cpf}`)}
+                    >
                       <img src={editIcon} alt="Editar" style={{ width: '20px', height: '20px' }} />
                     </button>
-                    <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirFuncionario(funcionario.cpf)}>
+
+                    <button
+                      style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
+                      onClick={() => excluirFuncionario(funcionario.cpf)}
+                    >
                       <img src={deleteIcon} alt="Excluir" style={{ width: '20px', height: '20px' }} />
                     </button>
                   </td>
@@ -80,9 +126,8 @@ function Funcionario() {
           </tbody>
         </table>
 
-        {/* Botão flutuante para adicionar funcionário */}
         <button
-          onClick={() => navigate("/cadastrar-funcionario")} // Redireciona para a tela de cadastro
+          onClick={() => navigate("/cadastrar-funcionario")}
           style={{
             position: "fixed",
             bottom: "20px",

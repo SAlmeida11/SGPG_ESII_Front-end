@@ -23,6 +23,7 @@ import VisualizarFuncionario from "./telas/VisualizarFuncionario.js";
 import VisualizarItem from "./telas/VisualizarItem.js";
 import EditarCliente from "./telas/EditarCliente.js";
 import EditarFornecedor from "./telas/EditarFornecedor.js";
+import EditarFuncionario from "./telas/editarfuncionario.js";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
           <Route path="/visualizar-cliente" element={<VisualizarCliente />} />
           <Route path="/visualizar-funcionario/:cpf" element={<VisualizarFuncionario />} />
           <Route path="/visualizar-item" element={<VisualizarItem />} />
+          <Route path="/editar-funcionario/:cpf" element={<EditarFuncionario />} />
           {/* Removendo comentários e garantindo que as rotas futuras sejam implementadas corretamente */}
           {/* <Route path="/venda" element={<Venda />} /> */}
           {/* <Route path="/sair" element={<Sair />} /> */}
