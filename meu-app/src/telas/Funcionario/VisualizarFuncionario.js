@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "../../components/Sidebar/menu.js";
-import useVerificarAutenticacao from "../autenticacao.js";
-import { useIdFromLocalStorage } from "../../func/getIdFromLocalStorage.js";
+import Sidebar from "./menu.js";
+import useVerificarAutenticacao from "./autenticacao";
 
 function VisualizarFuncionario() {
     useVerificarAutenticacao();
     const navigate = useNavigate();
-    const idFuncionario = useIdFromLocalStorage('idFuncionario');
-
+    const { cpf } = useParams(); // Obtém o CPF do funcionário pela URL
 
     const [form, setForm] = useState({
         nome: "",
@@ -19,8 +17,8 @@ function VisualizarFuncionario() {
         estado: "",
         logradouro: "",
         numero: "",
-        /* telefone: "",
-        email: "", */
+        telefone: "",
+        email: "",
         dataContratacao: "",
         salario: "",
         administrador: "NAO",
@@ -30,20 +28,42 @@ function VisualizarFuncionario() {
     useEffect(() => {
         async function fetchFuncionario() {
             try {
-                const response = await fetch(`http://localhost:5000/funcionarios/${idFuncionario}`);
+                console.log(`Buscando funcionário com CPF: ${cpf}`);
+                const response = await fetch(`http://localhost:5000/funcionarios/${cpf}`);
+    
                 if (response.ok) {
                     const data = await response.json();
-                    setForm(data);
-                } else {
+                    console.log("Dados recebidos da API:", data);
+                
+                    setForm({
+                        nome: data.nomeFun || "",  // Nome do funcionário
+                        cpf: data.cpf || "",
+                        dataNascimento: data.dtNascimento ? new Date(data.dtNascimento).toISOString().split("T")[0] : "",
+                        cep: "", // Adicionar quando houver na API
+                        cidade: "", // Adicionar quando houver na API
+                        estado: "", // Adicionar quando houver na API
+                        logradouro: "", // Adicionar quando houver na API
+                        numero: "", // Adicionar quando houver na API
+                        telefone: "", // Adicionar quando houver na API
+                        email: "", // Adicionar quando houver na API
+                        dataContratacao: "", // Adicionar quando houver na API
+                        salario: "", // Adicionar quando houver na API
+                        administrador: data.admin === 1 ? "SIM" : "NAO",
+                    });
+                }
+                 else {
+                    console.error("Erro ao carregar os dados do funcionário:", response.status);
                     alert("Erro ao carregar os dados do funcionário.");
-                    navigate("/funcionarios"); // Redireciona em caso de erro
+                    navigate("/funcionarios"); 
                 }
             } catch (error) {
                 console.error("Erro ao buscar funcionário:", error);
             }
         }
         fetchFuncionario();
-    }, [idFuncionario, navigate]);
+    }, [cpf, navigate]);
+    
+    
 
     return (
         <div style={{ display: "flex" }}>
@@ -70,11 +90,11 @@ function VisualizarFuncionario() {
                     </fieldset>
 
                     {/* Seção: Contato */}
-                    {/* <fieldset style={styles.fieldset}>
+                    <fieldset style={styles.fieldset}>
                         <legend>Contato</legend>
                         <input type="text" name="telefone" value={form.telefone} disabled style={styles.input} />
                         <input type="email" name="email" value={form.email} disabled style={styles.input} />
-                    </fieldset> */}
+                    </fieldset>
 
                     {/* Seção: Contrato */}
                     <fieldset style={styles.fieldset}>
@@ -118,7 +138,7 @@ const styles = {
         borderRadius: "8px",
         fontSize: "16px",
         boxSizing: "border-box",
-        backgroundColor: "#f5f5f5", // Fundo cinza para indicar campo desabilitado
+        backgroundColor: "#f5f5f5",
     },
     buttonContainer: {
         display: "flex",

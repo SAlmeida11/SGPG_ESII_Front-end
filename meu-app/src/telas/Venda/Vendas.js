@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./menu.js";
+import useVerificarAutenticacao from "./autenticacao";
 
-
-
-
-import { BsBasket2Fill } from "react-icons/bs";
-import useVerificarAutenticacao from "../autenticacao.js";
-import Sidebar from "../../components/Sidebar/menu.js";
-import { FaGasPump } from "react-icons/fa6";
+//import bomba from './bomba.png';
+import cesta from './cesta.png';
 
 function Venda() {
   useVerificarAutenticacao();
@@ -16,7 +13,7 @@ function Venda() {
   const [itens, setItens] = useState([]); // Itens que vêm da API
   const [itensSelecionados, setItensSelecionados] = useState([]);
   const [mostrarProdutos, setMostrarProdutos] = useState(false);
-
+  const navigate = useNavigate();
 
   const criarPagamento = async (formaPagamento, valorTotal) => {
     const pagamento = {
@@ -27,7 +24,7 @@ function Venda() {
       Parcelado: 0,
       Valor: valorTotal
     };
-
+  
     try {
       const response = await fetch("http://localhost:5000/pagamento", {
         method: "POST",
@@ -36,7 +33,7 @@ function Venda() {
         },
         body: JSON.stringify(pagamento)
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         return data.id_pagamento; // Supondo que a resposta da API contenha o id do pagamento
@@ -47,15 +44,15 @@ function Venda() {
       console.error("Erro ao criar pagamento:", error);
     }
   };
-
+  
   const cadastrarVenda = async (cpfCliente, formaPagamento, valorTotal) => {
     const idPagamento = await criarPagamento(formaPagamento, valorTotal);
-
+  
     if (!idPagamento) {
       alert("Erro ao criar o pagamento. Não será possível cadastrar a venda.");
       return;
     }
-
+  
     const venda = {
       data_hora: new Date().toISOString(), // Data e hora do sistema
       Venda_combustivel_idvendaCombustivel: 1, // ID do combustível
@@ -63,7 +60,7 @@ function Venda() {
       cliente_cpf: cpfCliente,
       funcionario_cpf: localStorage.getItem("cpfFuncionario") // CPF do funcionário salvo no localStorage
     };
-
+  
     try {
       const response = await fetch("http://localhost:5000/venda", {
         method: "POST",
@@ -72,7 +69,7 @@ function Venda() {
         },
         body: JSON.stringify(venda)
       });
-
+  
       if (response.ok) {
         alert("Venda cadastrada com sucesso!");
         resetarCampos(); // Limpa os campos após o cadastro
@@ -83,7 +80,7 @@ function Venda() {
       console.error("Erro ao cadastrar venda:", error);
     }
   };
-
+  
 
   // Carrega os itens da API
   useEffect(() => {
@@ -191,16 +188,7 @@ function Venda() {
               style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
               onClick={() => setMostrarProdutos(true)} // Abre a lista de produtos
             >
-              <BsBasket2Fill alt="Produto" style={{ width: '100px', height: '100px' }} />
-
-
-            </button>
-            <button
-              style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
-            >
-              <FaGasPump alt="Combustivel" style={{ width: '100px', height: '100px' }} />
-
-
+              <img src={cesta} alt="Produto" style={{ width: '100px', height: '100px' }} />
             </button>
           </div>
 
@@ -244,7 +232,6 @@ function Venda() {
               </table>
             </div>
           )}
-
 
           <div style={{ marginTop: "20px", border: "1px solid #ccc", padding: "10px", borderRadius: '5px', backgroundColor: '#d3d3d3' }}>
             <h2>Informações do Cliente</h2>
