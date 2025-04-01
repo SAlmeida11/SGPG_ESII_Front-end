@@ -9,31 +9,7 @@ import deleteIcon from './lixeira.icon.png';
 
 function Funcionario() {
   useVerificarAutenticacao();
-  const [funcionarios, setFuncionarios] = useState([
-    {
-      nomeFun: "Carlos Silva",
-      cpf: "123.456.789-00",
-      dtNascimento: "1985-06-15",
-      admin: 1,
-    },
-    {
-      nomeFun: "Ana Souza",
-      cpf: "987.654.321-00",
-      dtNascimento: "1992-09-23",
-      admin: 0,
-    },
-    {
-      nomeFun: "Mariana Oliveira",
-      cpf: "456.789.123-00",
-      dtNascimento: "1988-12-05",
-      admin: 1,
-    },
-    {
-      nomeFun: "Pedro Santos",
-      cpf: "321.654.987-00",
-      dtNascimento: "1995-03-10",
-      admin: 0,
-    }]);
+  const [funcionarios, setFuncionarios] = useState('')
   const navigate = useNavigate(); // Hook para navegação
 
   // Função para buscar funcionários da API
@@ -80,9 +56,13 @@ function Funcionario() {
                   <td>{funcionario.dtNascimento}</td>
                   <td>{funcionario.admin === 1 ? "Sim" : "Não"}</td>
                   <td>
-                    <button style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => console.log("Visualizar", funcionario.cpf)}>
-                      <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
-                    </button>
+                  <button
+                    style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
+                    onClick={() => navigate(`/visualizar-funcionario/${funcionario.cpf}`)}
+                  >
+                    <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
+                  </button>
+
                     <button style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => console.log("Editar", funcionario.cpf)}>
                       <img src={editIcon} alt="Editar" style={{ width: '20px', height: '20px' }} />
                     </button>
