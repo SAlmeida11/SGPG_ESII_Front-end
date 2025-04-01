@@ -6,7 +6,7 @@ import useVerificarAutenticacao from "./autenticacao";
 function VisualizarFuncionario() {
     useVerificarAutenticacao();
     const navigate = useNavigate();
-    const { cpf } = useParams(); // Obtém o CPF do funcionário pela URL
+    const { cpf } = useParams();
 
     const [form, setForm] = useState({
         nome: "",
@@ -17,44 +17,42 @@ function VisualizarFuncionario() {
         estado: "",
         logradouro: "",
         numero: "",
-        telefone: "",
-        email: "",
+        telefone: "", // Não presente na API
+        email: "", // Não presente na API
         dataContratacao: "",
         salario: "",
         administrador: "NAO",
     });
 
-    // Carrega os dados do funcionário ao iniciar a página
     useEffect(() => {
         async function fetchFuncionario() {
             try {
                 console.log(`Buscando funcionário com CPF: ${cpf}`);
                 const response = await fetch(`http://localhost:5000/funcionarios/${cpf}`);
-    
+
                 if (response.ok) {
                     const data = await response.json();
                     console.log("Dados recebidos da API:", data);
-                
+
                     setForm({
-                        nome: data.nomeFun || "",  // Nome do funcionário
+                        nome: data.nomeFun || "",
                         cpf: data.cpf || "",
                         dataNascimento: data.dtNascimento ? new Date(data.dtNascimento).toISOString().split("T")[0] : "",
-                        cep: "", // Adicionar quando houver na API
-                        cidade: "", // Adicionar quando houver na API
-                        estado: "", // Adicionar quando houver na API
-                        logradouro: "", // Adicionar quando houver na API
-                        numero: "", // Adicionar quando houver na API
-                        telefone: "", // Adicionar quando houver na API
-                        email: "", // Adicionar quando houver na API
-                        dataContratacao: "", // Adicionar quando houver na API
-                        salario: "", // Adicionar quando houver na API
+                        cep: data.endereco?.cep || "",
+                        cidade: data.endereco?.cidade || "",
+                        estado: data.endereco?.estado || "",
+                        logradouro: data.endereco?.logradouro || "",
+                        numero: data.endereco?.numero?.toString() || "",
+                        telefone: "", // Ainda não disponível na API
+                        email: "", // Ainda não disponível na API
+                        dataContratacao: data.vinculo?.dtContratacao ? new Date(data.vinculo.dtContratacao).toISOString().split("T")[0] : "",
+                        salario: data.vinculo?.salario?.toString() || "",
                         administrador: data.admin === 1 ? "SIM" : "NAO",
                     });
-                }
-                 else {
+                } else {
                     console.error("Erro ao carregar os dados do funcionário:", response.status);
                     alert("Erro ao carregar os dados do funcionário.");
-                    navigate("/funcionarios"); 
+                    navigate("/funcionarios");
                 }
             } catch (error) {
                 console.error("Erro ao buscar funcionário:", error);
@@ -62,8 +60,6 @@ function VisualizarFuncionario() {
         }
         fetchFuncionario();
     }, [cpf, navigate]);
-    
-    
 
     return (
         <div style={{ display: "flex" }}>
@@ -71,7 +67,6 @@ function VisualizarFuncionario() {
             <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
                 <h1>Visualizar Funcionário</h1>
                 <form>
-                    {/* Seção: Informações Pessoais */}
                     <fieldset style={styles.fieldset}>
                         <legend>Informações Pessoais</legend>
                         <input type="text" name="nome" value={form.nome} disabled style={styles.input} />
@@ -79,7 +74,6 @@ function VisualizarFuncionario() {
                         <input type="date" name="dataNascimento" value={form.dataNascimento} disabled style={styles.input} />
                     </fieldset>
 
-                    {/* Seção: Endereço */}
                     <fieldset style={styles.fieldset}>
                         <legend>Endereço</legend>
                         <input type="text" name="cep" value={form.cep} disabled style={styles.input} />
@@ -89,14 +83,6 @@ function VisualizarFuncionario() {
                         <input type="text" name="numero" value={form.numero} disabled style={styles.input} />
                     </fieldset>
 
-                    {/* Seção: Contato */}
-                    <fieldset style={styles.fieldset}>
-                        <legend>Contato</legend>
-                        <input type="text" name="telefone" value={form.telefone} disabled style={styles.input} />
-                        <input type="email" name="email" value={form.email} disabled style={styles.input} />
-                    </fieldset>
-
-                    {/* Seção: Contrato */}
                     <fieldset style={styles.fieldset}>
                         <legend>Contrato</legend>
                         <input type="date" name="dataContratacao" value={form.dataContratacao} disabled style={styles.input} />
@@ -107,7 +93,6 @@ function VisualizarFuncionario() {
                         </select>
                     </fieldset>
 
-                    {/* Botão de Voltar */}
                     <div style={styles.buttonContainer}>
                         <button type="button" onClick={() => navigate("/funcionarios")} style={styles.voltarButton}>
                             ◀ Voltar
