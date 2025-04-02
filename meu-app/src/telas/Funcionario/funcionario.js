@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao";
 
-import viewIcon from './view.icon.png';
-import editIcon from './editar.icon.png';
-import deleteIcon from './lixeira.icon.png';
+// import viewIcon from './view.icon.png';
+// import editIcon from './editar.icon.png';
+// import deleteIcon from './lixeira.icon.png';
+
+import { IoEyeSharp } from "react-icons/io5";
+import { MdEdit } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
 
 function Funcionario() {
   useVerificarAutenticacao();
@@ -99,21 +103,21 @@ function Funcionario() {
                       style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
                       onClick={() => navigate(`/visualizar-funcionario/${funcionario.cpf}`)}
                     >
-                      <img src={viewIcon} alt="Visualizar" style={{ width: '20px', height: '20px' }} />
+                      <IoEyeSharp alt="Visualizar" style={styles.icon} />
                     </button>
 
                     <button
                       style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
                       onClick={() => navigate(`/editar-funcionario/${funcionario.cpf}`)}
                     >
-                      <img src={editIcon} alt="Editar" style={{ width: '20px', height: '20px' }} />
+                      <MdEdit alt="Editar" style={styles.icon} />
                     </button>
 
                     <button
                       style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
                       onClick={() => excluirFuncionario(funcionario.cpf)}
                     >
-                      <img src={deleteIcon} alt="Excluir" style={{ width: '20px', height: '20px' }} />
+                      <FaTrash alt="Excluir" style={styles.icon} />
                     </button>
                   </td>
                 </tr>
@@ -152,5 +156,10 @@ function Funcionario() {
     </div>
   );
 }
+
+const styles = {
+  icon: { width: '18px', height: '18px', color: 'white' },
+}
+
 
 export default Funcionario;

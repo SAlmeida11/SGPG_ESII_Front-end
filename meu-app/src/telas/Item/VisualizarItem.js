@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao.js";
 
 function VisualizarItem() {
     useVerificarAutenticacao();
@@ -35,7 +35,7 @@ function VisualizarItem() {
                 } else {
                     console.error("Erro ao carregar os dados do item:", response.status);
                     alert("Erro ao carregar os dados do item.");
-                    navigate("/item");
+                    navigate("/itens");
                 }
             } catch (error) {
                 console.error("Erro ao buscar item:", error);
@@ -64,7 +64,7 @@ function VisualizarItem() {
                     </fieldset>
 
                     <div style={styles.buttonContainer}>
-                        <button type="button" onClick={() => navigate("/item")} style={styles.voltarButton}>
+                        <button type="button" onClick={() => navigate("/itens")} style={styles.voltarButton}>
                             ◀ Voltar
                         </button>
                     </div>

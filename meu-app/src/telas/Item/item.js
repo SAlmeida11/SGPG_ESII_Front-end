@@ -1,42 +1,43 @@
-import React, { useState, useEffect, use } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom"; // Importando Link corretamente
 import Sidebar from "../../components/Sidebar/menu.js";
-import useVerificarAutenticacao from "../autenticacao.js";
-import { FaTrash } from "react-icons/fa6";
+import useVerificarAutenticacao from "../autenticacao";
+
 import { IoEyeSharp } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
 
 function Itens() {
   useVerificarAutenticacao();
-  const [itens, setItens] = useState([
-    {
-      id: 1,
-      nome: "Item A",
-      preco: 10.5,
-      quantidade: 5,
-    },
-  ]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [itens, setItens] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // Termo de busca
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/itens")
+    fetch("http://localhost:5000/item")
       .then((response) => response.json())
-      .then((data) => setItens(data))
+      .then((data) => setItens(data.itens))
       .catch((error) => console.error("Erro ao buscar itens:", error));
   }, []);
 
-  const excluirItem = (id) => {
-    fetch(`http://localhost:5000/itens/${id}`, { method: "DELETE" })
-      .then(() => setItens(itens.filter((item) => item.id !== id)))
-      .catch((error) => {
-        console.error("Erro ao excluir item:", error)
-        alert("Erro ao excluir item!")
-      });
+  const excluirItem = (codigo_barras) => {
+    fetch(`http://localhost:5000/delete-item/${codigo_barras}`, { method: "DELETE" })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao excluir item.");
+        }
+        return response.json();
+      })
+      .then(() => {
+        setItens(itens.filter((i) => i.codigo_barras !== codigo_barras));
+        alert("Item excluído com sucesso!");
+      })
+      .catch((error) => console.error("Erro ao excluir item:", error));
   };
 
+  // Filtrando os itens pelo código de barras
   const filteredItens = itens.filter((item) =>
-    (item.nome || "").toLowerCase().includes((searchTerm || "").toLowerCase())
+    item.codigo_barras.toLowerCase().includes(searchTerm.toLowerCase()) // Comparando o código de barras com o termo de busca
   );
 
   return (
@@ -49,7 +50,7 @@ function Itens() {
             type="text"
             placeholder="Buscar"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)} // Atualizando o termo de busca
             style={{
               padding: "5px 20px",
               fontSize: "14px",
@@ -64,53 +65,69 @@ function Itens() {
           <thead>
             <tr style={{ backgroundColor: "#800000", color: "white" }}>
               <th>Nome</th>
-              <th>Preço</th>
-              <th>Quantidade</th>
+              <th>Categoria</th>
+              <th>Código de Barras</th>
+              <th>Preço Unitário</th>
+              <th>Quantidade Disponível</th>
               <th>Ação</th>
             </tr>
           </thead>
           <tbody>
             {filteredItens.length > 0 ? (
               filteredItens.map((item) => (
-                <tr key={item.id}>
+                <tr key={item.codigo_barras}>
                   <td>{item.nome}</td>
-                  <td>R$ {item.preco.toFixed(2)}</td>
-                  <td>{item.quantidade}</td>
+                  <td>{item.categoria}</td>
+                  <td>{item.codigo_barras}</td>
+                  <td>R$ {item.preco_unitario.toFixed(2)}</td>
+                  <td>{item.quantidade_disponivel}</td>
                   <td>
-                    <div style={{
-                      display: "flex",
-                      gap: "4px",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      padding: "4px"
-
-                    }}>
-                      <Link to="/visualizar-item" >
-                        <button style={{ backgroundColor: '#A7A7A7', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
-                          onClick={() => { localStorage.setItem("idItem", item.id); }}>
-                          <IoEyeSharp
-                            alt="Visualizar" style={styles.icon} />
-                        </button>
-                      </Link>
-                      <Link to="/editar-item" >
-                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
-                          onClick={() => { localStorage.setItem("idItem", item.id); }}>
-                          <MdEdit
-                            alt="Editar" style={styles.icon} />
-                        </button>
-                      </Link>
-                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirItem(item.id)}>
-                        <FaTrash alt="Excluir" style={styles.icon} />
+                    <Link to={`/visualizar-item/${item.codigo_barras}`}>
+                      <button
+                        style={{
+                          backgroundColor: "#A7A7A7",
+                          border: "none",
+                          padding: "8px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          marginRight: '5px'
+                        }}
+                      >
+                        <IoEyeSharp alt="Visualizar" style={styles.icon} />
                       </button>
-
-                    </div>
-
+                    </Link>
+                    <Link to="/editar-item">
+                      <button
+                        style={{
+                          backgroundColor: "#DFB408",
+                          border: "none",
+                          padding: "8px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          marginRight: '5px'
+                        }}
+                      >
+                        <MdEdit alt="Editar" style={styles.icon} />
+                      </button>
+                    </Link>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        border: "none",
+                        padding: "8px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => excluirItem(item.codigo_barras)}
+                    >
+                      <FaTrash style={styles.icon} />
+                    </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4">Nenhum item encontrado.</td>
+                <td colSpan="6">Nenhum item encontrado.</td>
               </tr>
             )}
           </tbody>
@@ -144,7 +161,6 @@ function Itens() {
 
 const styles = {
   icon: { width: '18px', height: '18px', color: 'white' },
-}
+};
 
 export default Itens;
-

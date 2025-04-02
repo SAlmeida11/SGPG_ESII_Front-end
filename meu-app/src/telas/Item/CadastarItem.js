@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao";
 
 //
 function CadastrarItem() {
@@ -32,7 +32,7 @@ function CadastrarItem() {
 
       if (response.ok) {
         alert("Item cadastrado com sucesso!");
-        navigate("/item");
+        navigate("/itens");
       } else {
         alert("Erro ao cadastrar item.");
       }
