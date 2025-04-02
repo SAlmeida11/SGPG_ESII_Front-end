@@ -6,11 +6,12 @@ import useVerificarAutenticacao from "./autenticacao";
 import { FaPowerOff } from "react-icons/fa6";
 import { IoEyeSharp } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
 
 function Itens() {
   useVerificarAutenticacao();
   const [itens, setItens] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // Termo de busca
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,14 +22,23 @@ function Itens() {
   }, []);
 
   const excluirItem = (codigo_barras) => {
-    fetch(`http://localhost:5000/item/${codigo_barras}`, { method: "DELETE" })
-      .then(() => setItens(itens.filter((item) => item.codigo_barras !== codigo_barras)))
+    fetch(`http://localhost:5000/delete-item/${codigo_barras}`, { method: "DELETE" })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao excluir item.");
+        }
+        return response.json();
+      })
+      .then(() => {
+        setItens(itens.filter((i) => i.codigo_barras !== codigo_barras));
+        alert("Item excluído com sucesso!");
+      })
       .catch((error) => console.error("Erro ao excluir item:", error));
   };
 
-  // Alteração: agora a filtragem é feita pelo código de barras
+  // Filtrando os itens pelo código de barras
   const filteredItens = itens.filter((item) =>
-    item.codigo_barras.toLowerCase().includes(searchTerm.toLowerCase())
+    item.codigo_barras.toLowerCase().includes(searchTerm.toLowerCase()) // Comparando o código de barras com o termo de busca
   );
 
   return (
@@ -41,7 +51,7 @@ function Itens() {
             type="text"
             placeholder="Buscar"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)} // Atualizando o termo de busca
             style={{
               padding: "5px 20px",
               fontSize: "14px",
@@ -73,7 +83,7 @@ function Itens() {
                   <td>R$ {item.preco_unitario.toFixed(2)}</td>
                   <td>{item.quantidade_disponivel}</td>
                   <td>
-                    <Link to="/visualizar-item">
+                    <Link to={`/visualizar-item/${item.codigo_barras}`}>
                       <button
                         style={{
                           backgroundColor: "#A7A7A7",
@@ -83,7 +93,6 @@ function Itens() {
                           cursor: "pointer",
                           marginRight: '5px'
                         }}
-                        onClick={() => console.log("Visualizar", item.codigo_barras)}
                       >
                         <IoEyeSharp alt="Visualizar" style={styles.icon} />
                       </button>
@@ -98,14 +107,13 @@ function Itens() {
                           cursor: "pointer",
                           marginRight: '5px'
                         }}
-                        onClick={() => console.log("Editar", item.codigo_barras)}
                       >
                         <MdEdit alt="Editar" style={styles.icon} />
                       </button>
                     </Link>
                     <button
                       style={{
-                        backgroundColor: "green",
+                        backgroundColor: "red",
                         border: "none",
                         padding: "8px",
                         borderRadius: "5px",
@@ -113,7 +121,7 @@ function Itens() {
                       }}
                       onClick={() => excluirItem(item.codigo_barras)}
                     >
-                      <FaPowerOff style={styles.icon} />
+                      <FaTrash style={styles.icon} />
                     </button>
                   </td>
                 </tr>
@@ -154,6 +162,6 @@ function Itens() {
 
 const styles = {
   icon: { width: '18px', height: '18px', color: 'white' },
-}
+};
 
 export default Itens;

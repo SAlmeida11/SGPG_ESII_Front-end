@@ -6,34 +6,43 @@ import useVerificarAutenticacao from "./autenticacao";
 function VisualizarItem() {
     useVerificarAutenticacao();
     const navigate = useNavigate();
-    const { id } = useParams(); // Obtém o ID do item pela URL
+    const { codigoBarras } = useParams();
 
-    const [item, setItem] = useState({
-        nome: "",
-        descricao: "",
-        preco: "",
-        quantidade: "",
-        ativo: true,
+    const [form, setForm] = useState({
+        nomeItem: "",
+        codigoBarras: "",
+        categoria: "",
+        precoUnitario: "",
+        qtdeEstoque: "",
     });
 
-    // Carrega os dados do item ao iniciar a página
     useEffect(() => {
         async function fetchItem() {
             try {
-                const response = await fetch(`http://localhost:5000/itens/${id}`);
+                console.log(`Buscando item com código de barras: ${codigoBarras}`);
+                const response = await fetch(`http://localhost:5000/item/${codigoBarras}`);
+        
                 if (response.ok) {
                     const data = await response.json();
-                    setItem(data);
+                    console.log("Dados recebidos da API:", data);
+                    setForm({
+                        nomeItem: data.NomeItem || "",
+                        codigoBarras: data.CodigoBarras || "",
+                        categoria: data.Categoria || "",
+                        precoUnitario: data.PrecUnitario ? data.PrecUnitario.toString() : "",
+                        qtdeEstoque: data.QtdeEstoque ? data.QtdeEstoque.toString() : "",
+                    });
                 } else {
+                    console.error("Erro ao carregar os dados do item:", response.status);
                     alert("Erro ao carregar os dados do item.");
-                    navigate("/itens"); // Redireciona em caso de erro
+                    navigate("/item");
                 }
             } catch (error) {
                 console.error("Erro ao buscar item:", error);
             }
         }
         fetchItem();
-    }, [id, navigate]);
+    }, [codigoBarras, navigate]);
 
     return (
         <div style={{ display: "flex" }}>
@@ -43,14 +52,19 @@ function VisualizarItem() {
                 <form>
                     <fieldset style={styles.fieldset}>
                         <legend>Informações do Item</legend>
-                        <input type="text" name="nome" value={item.nome} disabled style={styles.input} />
-                        <input type="text" name="descricao" value={item.descricao} disabled style={styles.input} />
-                        <input type="number" name="preco" value={item.preco} disabled style={styles.input} />
-                        <input type="number" name="quantidade" value={item.quantidade} disabled style={styles.input} />
+                        <input type="text" name="nomeItem" value={form.nomeItem} disabled style={styles.input} />
+                        <input type="text" name="codigoBarras" value={form.codigoBarras} disabled style={styles.input} />
+                        <input type="text" name="categoria" value={form.categoria} disabled style={styles.input} />
+                    </fieldset>
+
+                    <fieldset style={styles.fieldset}>
+                        <legend>Estoque e Preço</legend>
+                        <input type="number" name="qtdeEstoque" value={form.qtdeEstoque} disabled style={styles.input} />
+                        <input type="number" name="precoUnitario" value={form.precoUnitario} disabled style={styles.input} />
                     </fieldset>
 
                     <div style={styles.buttonContainer}>
-                        <button type="button" onClick={() => navigate("/itens")} style={styles.voltarButton}>
+                        <button type="button" onClick={() => navigate("/item")} style={styles.voltarButton}>
                             ◀ Voltar
                         </button>
                     </div>
@@ -79,7 +93,7 @@ const styles = {
         borderRadius: "8px",
         fontSize: "16px",
         boxSizing: "border-box",
-        backgroundColor: "#f5f5f5", // Fundo cinza para indicar campo desabilitado
+        backgroundColor: "#f5f5f5",
     },
     buttonContainer: {
         display: "flex",

@@ -54,7 +54,7 @@ function App() {
           <Route path="/visualizar-fornecedor" element={<VisualizarFornecedor />} />
           <Route path="/visualizar-cliente" element={<VisualizarCliente />} />
           <Route path="/visualizar-funcionario/:cpf" element={<VisualizarFuncionario />} />
-          <Route path="/visualizar-item" element={<VisualizarItem />} />
+          <Route path="/visualizar-item/:codigoBarras" element={<VisualizarItem />} />
           <Route path="/editar-funcionario/:cpf" element={<EditarFuncionario />} />
           {/* Removendo comentários e garantindo que as rotas futuras sejam implementadas corretamente */}
           {/* <Route path="/venda" element={<Venda />} /> */}
