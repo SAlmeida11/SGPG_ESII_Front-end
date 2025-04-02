@@ -142,7 +142,7 @@ function Fornecedor() {
                             alt="Editar" style={styles.icon} />
                         </button>
                       </Link>
-                      {fornecedor.Status.toLowerCase() === "ativo" && (
+                      {/* {fornecedor.Status.toLowerCase() === "ativo" && (
                         <button
                           style={{ backgroundColor: '#008000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
                           onClick={() => {
@@ -152,7 +152,7 @@ function Fornecedor() {
                           <BsFillBoxSeamFill
                             alt="Solicitar Compra" style={styles.icon} />
                         </button>
-                      )}
+                      )} */}
                       {(fornecedor.Status.toLowerCase() === "ativo") ? (
                         <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
                           onClick={() => desativarFornecedor(fornecedor.cnpj)}>

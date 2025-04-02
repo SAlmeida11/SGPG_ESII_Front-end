@@ -100,14 +100,14 @@ function Funcionario() {
                   <td>{funcionario.admin === 1 ? "Sim" : "Não"}</td>
                   <td>
                     <button
-                      style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
+                      style={{ backgroundColor: '#d3d3d3', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer', marginRight: '5px' }}
                       onClick={() => navigate(`/visualizar-funcionario/${funcionario.cpf}`)}
                     >
                       <IoEyeSharp alt="Visualizar" style={styles.icon} />
                     </button>
 
                     <button
-                      style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
+                      style={{ backgroundColor: '#ffd700', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer', marginRight: '5px' }}
                       onClick={() => navigate(`/editar-funcionario/${funcionario.cpf}`)}
                     >
                       <MdEdit alt="Editar" style={styles.icon} />

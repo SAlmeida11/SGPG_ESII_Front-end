@@ -32,11 +32,28 @@ function Venda() {
       .catch((error) => console.error("Erro ao buscar itens:", error));
   }, []);
 
+  const atualizarQuantidadeNoBanco = async (codigoBarras, quantidade) => {
+    try {
+      const response = await fetch(`http://localhost:5000/atualizar-quantidade/${codigoBarras}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantidade })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.erro || "Erro ao atualizar estoque");
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar quantidade no banco:", error);
+    }
+   };
+
   // Função para adicionar item à tabela de venda
   const adicionarItem = (item, quantidade) => {
     const itemComQuantidade = { ...item, quantidade };
     setItensSelecionados([...itensSelecionados, itemComQuantidade]);
     setMostrarProdutos(false); // Fecha a lista de produtos após a seleção
+    atualizarQuantidadeNoBanco(item.codigo_barras, quantidade);
   };
 
   // Função para atualizar a quantidade de um item selecionado
@@ -44,6 +61,7 @@ function Venda() {
     const itensAtualizados = [...itensSelecionados];
     itensAtualizados[index].quantidade = novaQuantidade;
     setItensSelecionados(itensAtualizados);
+    atualizarQuantidadeNoBanco(itensSelecionados[index].codigo_barras, novaQuantidade);
   };
 
   // Função para remover item da tabela de venda

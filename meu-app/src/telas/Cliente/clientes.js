@@ -20,7 +20,7 @@ import { formatarData } from "../../func/data.js";
 function Cliente() {
   useVerificarAutenticacao();
   const [clientes, setClientes] = useState([
-    { nomeCliente: "oioo", cpf: "111", dataCadastro: "12/12/1222" }
+    { nomeCliente: "", cpf: "", dataCadastro: "" }
   ]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
   const navigate = useNavigate();
