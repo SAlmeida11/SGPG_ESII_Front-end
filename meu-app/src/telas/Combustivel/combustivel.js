@@ -30,13 +30,13 @@ function Combustivel() {
   }, []);
 
   const excluirCombustivel = (id) => {
-    fetch(`http://localhost:5000/combustivel`, { method: "DELETE" })
+    fetch(`http://localhost:5000/combustiveis/${id}`, { method: "DELETE" })
       .then(() => {
-        setCombustiveis(combustiveis.filter((combustiveis) => combustiveis.id !== id));
+        setCombustiveis(combustiveis.filter((combustivel) => combustivel.id !== id));
       })
       .catch((error) => {
-        console.error("Erro ao excluir combustivel:", error)
-        alert("Erro ao excluir combustivel!")
+        console.error("Erro ao excluir combustível:", error);
+        alert("Erro ao excluir combustível!");
       });
   };
 

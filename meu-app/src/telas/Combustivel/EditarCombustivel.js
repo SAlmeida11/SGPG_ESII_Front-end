@@ -5,11 +5,9 @@ import useVerificarAutenticacao from "../autenticacao";
 import { useIdFromLocalStorage } from "../../func/getIdFromLocalStorage.js";
 
 function EditarCombustivel() {
-
     useVerificarAutenticacao();
-
+    
     const idCombustivel = useIdFromLocalStorage('idCombustivel');
-
     const navigate = useNavigate();
     const [form, setForm] = useState({
         nome: "",
@@ -25,12 +23,12 @@ function EditarCombustivel() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5000/combustiveis", {
+            const response = await fetch(`http://localhost:5000/combustiveis/${idCombustivel}`, { // Corrigida a URL
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
             });
-
+    
             if (response.ok) {
                 alert("Combustível editado com sucesso!");
                 navigate("/combustiveis");
@@ -44,18 +42,18 @@ function EditarCombustivel() {
 
     useEffect(() => {
         async function fetchCombustivel() {
+            if (!idCombustivel) return;
             try {
-                const response = await fetch(`http://localhost:5000/combustiveis?id=${idCombustivel}`);
-                if (!response.ok) throw new Error("Erro ao buscar combustivel");
+                const response = await fetch(`http://localhost:5000/combustiveis/${idCombustivel}`);
+                if (!response.ok) throw new Error("Erro ao buscar combustível");
                 const data = await response.json();
-                setForm(data.combustivel);
+                setForm(data);
             } catch (error) {
                 console.error("Erro:", error);
             }
         }
-
         fetchCombustivel();
-    }, []);
+    }, [idCombustivel]);
 
     return (
         <div style={{ display: "flex" }}>
@@ -65,12 +63,11 @@ function EditarCombustivel() {
                 <form onSubmit={handleSubmit}>
                     <fieldset style={styles.fieldset}>
                         <legend>Informações do Combustível</legend>
-                        <input type="text" name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} style={styles.input} />
-                        <input type="number" name="preco_litro" placeholder="Preço por Litro" value={form.preco_litro} onChange={handleChange} style={styles.input} />
-                        <input type="text" name="categoria" placeholder="Categoria" value={form.categoria} onChange={handleChange} style={styles.input} />
-                        <input type="number" name="quantidade_disponivel" placeholder="Quantidade Disponível (L)" value={form.quantidade_disponivel} onChange={handleChange} style={styles.input} />
+                        <input type="text" name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} style={styles.input} required />
+                        <input type="number" name="preco_litro" placeholder="Preço por Litro" value={form.preco_litro} onChange={handleChange} style={styles.input} required />
+                        <input type="text" name="categoria" placeholder="Categoria" value={form.categoria} onChange={handleChange} style={styles.input} required />
+                        <input type="number" name="quantidade_disponivel" placeholder="Quantidade Disponível (L)" value={form.quantidade_disponivel} onChange={handleChange} style={styles.input} required />
                     </fieldset>
-
                     <div style={styles.buttonContainer}>
                         <button type="button" onClick={() => navigate("/combustiveis")} style={styles.voltarButton}>◀ Voltar</button>
                         <button type="submit" style={styles.salvarButton}>Salvar</button>

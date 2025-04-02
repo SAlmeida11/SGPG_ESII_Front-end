@@ -65,7 +65,7 @@ function Reservatorios() {
             {reservatorios.length > 0 ? (
               reservatorios.map((reservatorio) => (
                 <tr key={reservatorio.id}>
-                  <td>{reservatorio.tipoCombustivel}</td>
+                  <td>{reservatorio.combustivel}</td>
                   <td>{reservatorio.capacidade}</td>
                   <td>{reservatorio.nivelAtual}</td>
                   <td>{reservatorio.temperatura}°C</td>

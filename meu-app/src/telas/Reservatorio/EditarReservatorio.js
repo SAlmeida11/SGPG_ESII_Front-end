@@ -7,9 +7,7 @@ import { useIdFromLocalStorage } from "../../func/getIdFromLocalStorage.js";
 function EditarReservatorio() {
     useVerificarAutenticacao();
     const navigate = useNavigate();
-
     const id = useIdFromLocalStorage('idReservatorio');
-
 
     const [form, setForm] = useState({
         tipoCombustivel: "", // aqui será o ID do combustível selecionado
@@ -20,22 +18,44 @@ function EditarReservatorio() {
 
     const [combustiveis, setCombustiveis] = useState([]);
 
+    // Buscando a lista de combustíveis para o select
     useEffect(() => {
         async function fetchCombustiveis() {
             try {
-                const response = await fetch(`http://localhost:5000/combustiveis/${id}`);
+                const response = await fetch(`http://localhost:5000/combustiveis`);
                 if (!response.ok) throw new Error("Erro ao buscar combustíveis");
-
                 const data = await response.json();
-                // Caso a API retorne { combustiveis: [...] }
+                // Supondo que a API retorne { combustiveis: [...] }
                 setCombustiveis(data.combustiveis);
             } catch (error) {
                 console.error("Erro:", error);
             }
         }
-
         fetchCombustiveis();
     }, []);
+
+    // Buscando os dados atuais do reservatório para pré-preencher o formulário
+    useEffect(() => {
+        async function fetchReservatorio() {
+            try {
+                const response = await fetch(`http://localhost:5000/reservatorios/${id}`);
+                if (!response.ok) throw new Error("Erro ao buscar reservatório");
+                const data = await response.json();
+                // Supondo que a API retorne os dados do reservatório diretamente
+                setForm({
+                    capacidade: data.capacidade,
+                    nivelAtual: data.nivelAtual,
+                    temperatura: data.temperatura,
+                    tipoCombustivel: data.idcombustivel || "" // adapte conforme o nome do campo retornado
+                });
+            } catch (error) {
+                console.error("Erro:", error);
+            }
+        }
+        if(id) {
+            fetchReservatorio();
+        }
+    }, [id]);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -44,14 +64,22 @@ function EditarReservatorio() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5000/reservatorios", {
+            const response = await fetch(`http://localhost:5000/reservatorios/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
             });
-
+    
+            const data = await response.json();
+    
             if (response.ok) {
                 alert("Reservatório editado com sucesso!");
+    
+                // Se houver alerta de nível baixo, exibir pop-up
+                if (data.alerta) {
+                    alert(data.alerta);
+                }
+    
                 navigate("/reservatorios");
             } else {
                 alert("Erro ao editar reservatório.");
