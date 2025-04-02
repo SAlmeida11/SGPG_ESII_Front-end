@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/menu.js";
 import useVerificarAutenticacao from "../autenticacao";
 
-//import bomba from './bomba.png';
+//import de imagens
 import cesta from './cesta.png';
+import consultarVendas from './Consultar Vendas.png'
 
 function Venda() {
   useVerificarAutenticacao();
@@ -169,6 +170,13 @@ function Venda() {
               onClick={() => setMostrarProdutos(true)} // Abre a lista de produtos
             >
               <img src={cesta} alt="Produto" style={{ width: '100px', height: '100px' }} />
+            </button>
+
+            <button
+              style={{ padding: "10px", backgroundColor: "#d3d3d3", color: "black", border: "none", borderRadius: "5px", cursor: "pointer" }}
+              onClick={() => navigate("/lista-vendas")}
+            >
+              <img src={consultarVendas} alt="Consultar Vendas" style={{ width: '100px', height: '100px' }} />
             </button>
           </div>
 

@@ -28,6 +28,7 @@ import EditarFuncionario from "./telas/Funcionario/EditarFuncionario.js";
 import EditarItem from "./telas/Item/EditarItem.js";
 import EditarReservatorio from "./telas/Reservatorio/EditarReservatorio.js";
 import EditarServico from "./telas/Servico/EditarServico.js";
+import ListaVendas from "./telas/Venda/ListaVendas.js";
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
           <Route path="/reservatorios" element={<Reservatorio />} />
           <Route path="/servicos" element={<Servicos />} />
           <Route path="/venda" element={<Venda />} />
+          <Route path="/lista-vendas" element={<ListaVendas />} />
           <Route path="/visualizar-fornecedor" element={<VisualizarFornecedor />} />
           <Route path="/visualizar-cliente" element={<VisualizarCliente />} />
           <Route path="/visualizar-funcionario/:cpf" element={<VisualizarFuncionario />} />
