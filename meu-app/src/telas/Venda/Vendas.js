@@ -15,73 +15,6 @@ function Venda() {
   const [mostrarProdutos, setMostrarProdutos] = useState(false);
   const navigate = useNavigate();
 
-  const criarPagamento = async (formaPagamento, valorTotal) => {
-    const pagamento = {
-      Desconto: 0.0,
-      FormaPagamento: formaPagamento,
-      IntituiicaoCartaoCred_cnpj: "12345678000101",
-      Juros: 0.0,
-      Parcelado: 0,
-      Valor: valorTotal
-    };
-  
-    try {
-      const response = await fetch("http://localhost:5000/pagamento", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(pagamento)
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        return data.id_pagamento; // Supondo que a resposta da API contenha o id do pagamento
-      } else {
-        throw new Error("Erro ao cadastrar o pagamento");
-      }
-    } catch (error) {
-      console.error("Erro ao criar pagamento:", error);
-    }
-  };
-  
-  const cadastrarVenda = async (cpfCliente, formaPagamento, valorTotal) => {
-    const idPagamento = await criarPagamento(formaPagamento, valorTotal);
-  
-    if (!idPagamento) {
-      alert("Erro ao criar o pagamento. Não será possível cadastrar a venda.");
-      return;
-    }
-  
-    const venda = {
-      data_hora: new Date().toISOString(), // Data e hora do sistema
-      Venda_combustivel_idvendaCombustivel: 1, // ID do combustível
-      Pagamento_id_pagamento: idPagamento,
-      cliente_cpf: cpfCliente,
-      funcionario_cpf: localStorage.getItem("cpfFuncionario") // CPF do funcionário salvo no localStorage
-    };
-  
-    try {
-      const response = await fetch("http://localhost:5000/venda", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(venda)
-      });
-  
-      if (response.ok) {
-        alert("Venda cadastrada com sucesso!");
-        resetarCampos(); // Limpa os campos após o cadastro
-      } else {
-        throw new Error("Erro ao cadastrar a venda");
-      }
-    } catch (error) {
-      console.error("Erro ao cadastrar venda:", error);
-    }
-  };
-  
-
   // Carrega os itens da API
   useEffect(() => {
     fetch("http://localhost:5000/item")
@@ -120,7 +53,9 @@ function Venda() {
 
   // Função para calcular o total
   const calcularTotal = () => {
-    return itensSelecionados.reduce((total, item) => total + item.quantidade * item.preco_unitario, 0).toFixed(2);
+    return itensSelecionados
+      .reduce((total, item) => total + item.quantidade * item.preco_unitario, 0)
+      .toFixed(2);
   };
 
   // Função de resetar todos os campos
@@ -129,6 +64,51 @@ function Venda() {
     setFormaPagamento(""); // Limpa a forma de pagamento
     setItensSelecionados([]); // Limpa os itens selecionados
     setMostrarProdutos(false); // Fecha a lista de produtos
+  };
+
+  // Função para cadastrar a venda no novo formato
+  const cadastrarVenda = async (cpfCliente, formaPag, valorTotal) => {
+    // Concatena os nomes dos itens selecionados
+    const itensString = itensSelecionados.map(item => item.nome).join(", ");
+    
+    // Mapeia o valor selecionado para o formato esperado
+    let tipoPagamento;
+    if (formaPag === "cartao") {
+      tipoPagamento = "Cartão de Crédito";
+    } else if (formaPag === "pix") {
+      tipoPagamento = "PIX";
+    } else if (formaPag === "dinheiro") {
+      tipoPagamento = "Dinheiro";
+    } else {
+      tipoPagamento = formaPag;
+    }
+    
+    const venda = {
+      cpfCliente: cpfCliente,
+      cpfFuncionario: localStorage.getItem("cpf"),
+      itens: itensString,
+      valor: parseFloat(valorTotal),
+      tipoPagamento: tipoPagamento
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/cadvenda", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(venda)
+      });
+
+      if (response.ok) {
+        alert("Venda cadastrada com sucesso!");
+        resetarCampos(); // Limpa os campos após o cadastro
+      } else {
+        throw new Error("Erro ao cadastrar a venda");
+      }
+    } catch (error) {
+      console.error("Erro ao cadastrar venda:", error);
+    }
   };
 
   return (
