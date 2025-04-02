@@ -20,9 +20,9 @@ Isso cria um novo projeto React com todas as dependências necessárias. O npx g
 
 Para instalar todas as dependências do projeto react.js, execute o comando:
 
-npm install
-npm i react-icons
-npm install react-scripts --save
+npm install<br/>
+npm i react-icons<br/>
+npm install react-scripts --save<br/>
 
 Para testar todos os componentes do frontend, navegue até a pasta meu-app, com o comando no terminal:
 
