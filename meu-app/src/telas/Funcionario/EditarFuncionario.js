@@ -1,202 +1,292 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/Sidebar/menu.js";
-import useVerificarAutenticacao from "../autenticacao.js";
-import { useIdFromLocalStorage } from "../../func/getIdFromLocalStorage.js";
-import { formatarCPF, unformatCPF } from "../../func/cpf.js";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Sidebar from "./menu.js";
+import useVerificarAutenticacao from "./autenticacao.js";
 
 function EditarFuncionario() {
-    useVerificarAutenticacao();
-    const navigate = useNavigate();
-    const idFuncionario = useIdFromLocalStorage('idFuncionario');
+  useVerificarAutenticacao();
 
-    const [form, setForm] = useState({
-        nome: "",
-        cpf: "",
-        dataNascimento: "",
-        cep: "",
-        cidade: "",
-        estado: "",
-        logradouro: "",
-        numero: "",
-        dataContratacao: "",
-        salario: "",
-        administrador: "NAO",
-    });
+  const { cpf } = useParams(); // Obtém o CPF do funcionário da URL
+  const navigate = useNavigate();
+  
+  const [form, setForm] = useState({
+    nomeFun: "",
+    cpf: "",
+    dtNascimento: "",
+    cep: "",
+    cidade: "",
+    estado: "",
+    logradouro: "",
+    numero: "",
+    telefone: "",
+    email: "",
+    admin: 0, // Campo admin adicionado
+    vinculo: {
+      dtContratacao: "",
+      salario: 0.0
+    }
+  });
 
-    // Carrega os dados do funcionário ao iniciar a página
-    useEffect(() => {
-        async function fetchFuncionario() {
-            try {
-                const response = await fetch(`http://localhost:5000/funcionarios/${idFuncionario}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setForm(data);
-                } else {
-                    alert("Erro ao carregar os dados do funcionário.");
-                    navigate("/funcionarios"); // Redireciona em caso de erro
-                }
-            } catch (error) {
-                console.error("Erro ao buscar funcionário:", error);
-            }
-        }
-        fetchFuncionario();
-    }, [idFuncionario, navigate]);
+  useEffect(() => {
+    async function fetchFuncionario() {
+      try {
+        const response = await fetch(`http://localhost:5000/funcionarios/${cpf}`);
+        const data = await response.json();
+        setForm({
+          nomeFun: data.nomeFun || "",
+          cpf: data.cpf || "",
+          dtNascimento: formatDate(data.dtNascimento) || "",
+          cep: data.endereco.cep || "",
+          cidade: data.endereco.cidade || "",
+          estado: data.endereco.estado || "",
+          logradouro: data.endereco.logradouro || "",
+          numero: data.endereco.numero || "",
+          telefone: data.telefone || "",
+          email: data.email || "",
+          admin: data.admin || 0, // Preencher o campo admin com o valor da API
+          vinculo: {
+            dtContratacao: formatDate(data.vinculo.dtContratacao) || "",
+            salario: data.vinculo.salario || 0.0
+          }
+        });
+      } catch (error) {
+        console.error("Erro ao buscar funcionário:", error);
+      }
+    }
 
-    // Função para atualizar os campos do formulário
-    const handleChange = (e) => {
-        let fieldValue = e.target.value;
+    fetchFuncionario();
+  }, [cpf]);
 
-        if (e.target.name === "cpf") {
-            fieldValue = formatarCPF(fieldValue);
-        }
+  // Função para formatar a data
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0]; // Retorna no formato yyyy-mm-dd
+  };
 
-        setForm({ ...form, [e.target.name]: fieldValue });
-        const { name, value } = e.target;
-        // Se o campo alterado for o CEP e tiver 8 dígitos, buscar endereço
-        if (name === "cep" && value.length === 8) {
-            buscarEndereco(value);
-        }
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+  
+    if (name.startsWith("vinculo.")) {
+      // Se o nome começa com "vinculo.", atualiza apenas esse campo dentro do objeto vinculo
+      const key = name.split(".")[1]; // Extrai a chave real (dtContratacao ou salario)
+      setForm((prevForm) => ({
+        ...prevForm,
+        vinculo: {
+          ...prevForm.vinculo,
+          [key]: value,
+        },
+      }));
+    } else {
+      setForm({ ...form, [name]: value });
+    }
+  };
+  
 
-    // Função para enviar os dados do cliente para a API
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:5000/editar-funcionario/${cpf}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          admin: form.admin, // Adicionando o campo admin no body
+          nomeFun: form.nomeFun,
+          cpf: form.cpf,
+          dtNascimento: form.dtNascimento,
+          endereco: {
+            cep: form.cep,
+            cidade: form.cidade,
+            estado: form.estado,
+            logradouro: form.logradouro,
+            numero: form.numero
+          },
+          telefone: form.telefone,
+          email: form.email,
+          vinculo: form.vinculo
+        }),
+      });
 
-        let formCopy = { ...form };
-        formCopy.cpf = unformatCPF(formCopy.cpf);
+      if (response.ok) {
+        alert("Funcionário atualizado com sucesso!");
+        navigate("/funcionarios"); // Volta para a tela de funcionários
+      } else {
+        alert("Erro ao atualizar funcionário.");
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar funcionário:", error);
+    }
+  };
 
-        try {
-            const response = await fetch(`http://localhost:5000/clientes`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formCopy),
-            });
+  return (
+    <div style={{ display: "flex" }}>
+      <Sidebar />
+      <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
+        <h1>Editar Funcionário</h1>
+        <form onSubmit={handleSubmit}>
+          {/* Seção: Informações Pessoais */}
+          <fieldset style={styles.fieldset}>
+            <legend>Informações Pessoais</legend>
+            <input
+              type="text"
+              name="nomeFun"
+              placeholder="Nome"
+              value={form.nomeFun}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="cpf"
+              placeholder="CPF"
+              value={form.cpf}
+              onChange={handleChange}
+              style={styles.input}
+              disabled
+            />
+            <input
+              type="date"
+              name="dtNascimento"
+              placeholder="Data de Nascimento"
+              value={form.dtNascimento}
+              onChange={handleChange}
+              style={styles.input}
+            />
+          </fieldset>
 
-            if (response.ok) {
-                alert("Cliente editado com sucesso!");
-                navigate("/clientes"); // Volta para a tela de cliente
-            } else {
-                alert("Erro ao editar cliente.");
-            }
-        } catch (error) {
-            console.error("Erro ao editar cliente:", error);
-        }
-    };
+          {/* Seção: Endereço */}
+          <fieldset style={styles.fieldset}>
+            <legend>Endereço</legend>
+            <input
+              type="text"
+              name="cep"
+              placeholder="CEP"
+              value={form.cep}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="cidade"
+              placeholder="Cidade"
+              value={form.cidade}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="estado"
+              placeholder="Estado"
+              value={form.estado}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="logradouro"
+              placeholder="Logradouro"
+              value={form.logradouro}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="text"
+              name="numero"
+              placeholder="Número"
+              value={form.numero}
+              onChange={handleChange}
+              style={styles.input}
+            />
+          </fieldset>
 
-    // Função para buscar endereço pelo ViaCEP
-    const buscarEndereco = async (cep) => {
-        try {
-            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-            const data = await response.json();
+          {/* Seção: Vínculo */}
+          <fieldset style={styles.fieldset}>
+            <legend>Vínculo</legend>
+            <input
+              type="date"
+              name="vinculo.dtContratacao"
+              placeholder="Data de Contratação"
+              value={form.vinculo.dtContratacao}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="number"
+              name="vinculo.salario"
+              placeholder="Salário"
+              value={form.vinculo.salario}
+              onChange={handleChange}
+              style={styles.input}
+            />
+          </fieldset>
 
-            if (!data.erro) {
-                setForm((prevForm) => ({
-                    ...prevForm,
-                    logradouro: data.logradouro || "",
-                    bairro: data.bairro || "",
-                    cidade: data.localidade || "",
-                    estado: data.uf || "",
-                }));
-            } else {
-                alert("CEP não encontrado!");
-            }
-        } catch (error) {
-            console.error("Erro ao buscar endereço:", error);
-            alert("Erro ao buscar o CEP. Tente novamente.");
-        }
-    };
-    return (
-        <div style={{ display: "flex" }}>
-            <Sidebar />
-            <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
-                <h1>Editar Funcionário</h1>
-                <form onSubmit={handleSubmit}>
-                    {/* Seção: Informações Pessoais */}
-                    <fieldset style={styles.fieldset}>
-                        <legend>Informações Pessoais</legend>
-                        <input type="text" name="nome" value={form.nome} onChange={handleChange} style={styles.input} />
-                        <input type="text" name="cpf" value={form.cpf} onChange={handleChange} style={styles.input} />
-                        <input type="date" name="dataNascimento" value={form.dataNascimento} onChange={handleChange} style={styles.input} />
-                    </fieldset>
+          {/* Seção: Admin */}
+          <fieldset style={styles.fieldset}>
+            <legend>Admin</legend>
+            <select
+              name="admin"
+              value={form.admin}
+              onChange={handleChange}
+              style={styles.input}
+            >
+              <option value={1}>Sim</option>
+              <option value={0}>Não</option>
+            </select>
+          </fieldset>
 
-                    {/* Seção: Endereço */}
-                    <fieldset style={styles.fieldset}>
-                        <legend>Endereço</legend>
-                        <input type="text" name="cep" value={form.cep} onChange={handleChange} style={styles.input} />
-                        <input type="text" name="cidade" value={form.cidade} onChange={handleChange} style={styles.input} />
-                        <input type="text" name="estado" value={form.estado} onChange={handleChange} style={styles.input} />
-                        <input type="text" name="logradouro" value={form.logradouro} onChange={handleChange} style={styles.input} />
-                        <input type="text" name="numero" value={form.numero} onChange={handleChange} style={styles.input} />
-                    </fieldset>
-
-                    {/* Seção: Contrato */}
-                    {/* <fieldset style={styles.fieldset}>
-                        <legend>Contrato</legend>
-                        <input type="date" name="dataContratacao" value={form.dataContratacao} onChange={handleChange} style={styles.input} />
-                        <input type="number" name="salario" value={form.salario} onChange={handleChange} style={styles.input} />
-                        <select name="administrador" value={form.administrador} onChange={handleChange} style={styles.input}>
-                            <option value="NAO">Padrão</option>
-                            <option value="SIM">Administrador</option>
-                        </select>
-                    </fieldset> */}
-
-                    {/* Botão de Voltar */}
-                    <div style={styles.buttonContainer}>
-                        <button type="button" onClick={() => navigate("/funcionarios")} style={styles.voltarButton}>
-                            ◀ Voltar
-                        </button>
-                        <button type="submit" style={styles.salvarButton}>
-                            Salvar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
+          {/* Botões */}
+          <div style={styles.buttonContainer}>
+            <button
+              type="button"
+              onClick={() => navigate("/funcionarios")}
+              style={styles.voltarButton}
+            >
+              ◀ Voltar
+            </button>
+            <button type="submit" style={styles.salvarButton}>
+              Salvar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 const styles = {
-    fieldset: {
-        border: "1px solid #ccc",
-        padding: "20px",
-        marginBottom: "15px",
-        borderRadius: "8px",
-        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "15px",
-    },
-    input: {
-        width: "45%",
-        padding: "12px",
-        margin: "10px 0",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        fontSize: "16px",
-        boxSizing: "border-box",
-    },
-    buttonContainer: {
-        display: "flex",
-        justifyContent: "space-between",
-        marginTop: "20px",
-    },
-    voltarButton: {
-        backgroundColor: "#ccc",
-        border: "none",
-        padding: "12px 25px",
-        borderRadius: "8px",
-        cursor: "pointer",
-        fontSize: "16px",
-    },
-    salvarButton: {
-        backgroundColor: "#008000",
-        color: "white",
-        border: "none",
-        padding: "12px 25px",
-        borderRadius: "8px",
-        cursor: "pointer",
-        fontSize: "16px",
-    },
+  fieldset: {
+    border: "1px solid #ccc",
+    padding: "10px",
+    marginBottom: "15px",
+    borderRadius: "5px",
+  },
+  input: {
+    width: "30%",
+    padding: "8px",
+    margin: "5px",
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "20px",
+  },
+  voltarButton: {
+    backgroundColor: "#ccc",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  salvarButton: {
+    backgroundColor: "#008000",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
 };
+
 export default EditarFuncionario;

@@ -24,17 +24,16 @@ function VisualizarFuncionario() {
         administrador: "NAO",
     });
 
-    // Carrega os dados do funcionário ao iniciar a página
     useEffect(() => {
         async function fetchFuncionario() {
             try {
                 console.log(`Buscando funcionário com CPF: ${cpf}`);
                 const response = await fetch(`http://localhost:5000/funcionarios/${cpf}`);
-    
+
                 if (response.ok) {
                     const data = await response.json();
                     console.log("Dados recebidos da API:", data);
-                
+
                     setForm({
                         nome: data.nomeFun || "",
                         cpf: data.cpf || "",
@@ -53,7 +52,7 @@ function VisualizarFuncionario() {
                 } else {
                     console.error("Erro ao carregar os dados do funcionário:", response.status);
                     alert("Erro ao carregar os dados do funcionário.");
-                    navigate("/funcionarios"); 
+                    navigate("/funcionarios");
                 }
             } catch (error) {
                 console.error("Erro ao buscar funcionário:", error);
@@ -61,8 +60,6 @@ function VisualizarFuncionario() {
         }
         fetchFuncionario();
     }, [cpf, navigate]);
-    
-    
 
     return (
         <div style={{ display: "flex" }}>
@@ -70,7 +67,6 @@ function VisualizarFuncionario() {
             <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
                 <h1>Visualizar Funcionário</h1>
                 <form>
-                    {/* Seção: Informações Pessoais */}
                     <fieldset style={styles.fieldset}>
                         <legend>Informações Pessoais</legend>
                         <input type="text" name="nome" value={form.nome} disabled style={styles.input} />
@@ -78,7 +74,6 @@ function VisualizarFuncionario() {
                         <input type="date" name="dataNascimento" value={form.dataNascimento} disabled style={styles.input} />
                     </fieldset>
 
-                    {/* Seção: Endereço */}
                     <fieldset style={styles.fieldset}>
                         <legend>Endereço</legend>
                         <input type="text" name="cep" value={form.cep} disabled style={styles.input} />
@@ -88,14 +83,6 @@ function VisualizarFuncionario() {
                         <input type="text" name="numero" value={form.numero} disabled style={styles.input} />
                     </fieldset>
 
-                    {/* Seção: Contato */}
-                    <fieldset style={styles.fieldset}>
-                        <legend>Contato</legend>
-                        <input type="text" name="telefone" value={form.telefone} disabled style={styles.input} />
-                        <input type="email" name="email" value={form.email} disabled style={styles.input} />
-                    </fieldset>
-
-                    {/* Seção: Contrato */}
                     <fieldset style={styles.fieldset}>
                         <legend>Contrato</legend>
                         <input type="date" name="dataContratacao" value={form.dataContratacao} disabled style={styles.input} />
@@ -106,7 +93,6 @@ function VisualizarFuncionario() {
                         </select>
                     </fieldset>
 
-                    {/* Botão de Voltar */}
                     <div style={styles.buttonContainer}>
                         <button type="button" onClick={() => navigate("/funcionarios")} style={styles.voltarButton}>
                             ◀ Voltar

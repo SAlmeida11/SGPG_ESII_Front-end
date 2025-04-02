@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/Sidebar/menu.js";
-import useVerificarAutenticacao from "../autenticacao.js";
+import Sidebar from "./menu.js";
+import useVerificarAutenticacao from "./autenticacao";
 
-
+//
 function CadastrarItem() {
   useVerificarAutenticacao();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     nome: "",
-    descricao: "",
-    preco: "",
-    quantidade: "",
+    categoria: "",
+    preco_unitario: "",
+    quantidade_disponivel: "",
+    codigo_barras: "",
+    funcionario_cpf: "",
     ativo: true,
   });
 
@@ -22,7 +24,7 @@ function CadastrarItem() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/itens", {
+      const response = await fetch("http://localhost:5000/item", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -30,7 +32,7 @@ function CadastrarItem() {
 
       if (response.ok) {
         alert("Item cadastrado com sucesso!");
-        navigate("/itens");
+        navigate("/item");
       } else {
         alert("Erro ao cadastrar item.");
       }
@@ -47,44 +49,87 @@ function CadastrarItem() {
         <form onSubmit={handleSubmit}>
           <fieldset style={styles.fieldset}>
             <legend>Informações do Item</legend>
-            <input
-              type="text"
-              name="nome"
-              placeholder="Nome do Item"
-              value={form.nome}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              type="text"
-              name="descricao"
-              placeholder="Descrição"
-              value={form.descricao}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              type="number"
-              name="preco"
-              placeholder="Preço (R$)"
-              value={form.preco}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              type="number"
-              name="quantidade"
-              placeholder="Quantidade"
-              value={form.quantidade}
-              onChange={handleChange}
-              style={styles.input}
-            />
+
+            <div style={styles.inputGroup}>
+              <div style={styles.inputWrapper}>
+                <label style={styles.label}>Nome do Item:</label>
+                <input
+                  type="text"
+                  name="nome"
+                  placeholder="Nome do Item"
+                  value={form.nome}
+                  onChange={handleChange}
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.inputWrapper}>
+                <label style={styles.label}>Categoria:</label>
+                <input
+                  type="text"
+                  name="categoria"
+                  placeholder="Categoria"
+                  value={form.categoria}
+                  onChange={handleChange}
+                  style={styles.input}
+                />
+              </div>
+            </div>
+
+            <div style={styles.inputGroup}>
+              <div style={styles.inputWrapper}>
+                <label style={styles.label}>Preço (R$):</label>
+                <input
+                  type="number"
+                  name="preco_unitario"
+                  placeholder="Preço (R$)"
+                  value={form.preco_unitario}
+                  onChange={handleChange}
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.inputWrapper}>
+                <label style={styles.label}>Quantidade Disponível:</label>
+                <input
+                  type="number"
+                  name="quantidade_disponivel"
+                  placeholder="Quantidade Disponível"
+                  value={form.quantidade_disponivel}
+                  onChange={handleChange}
+                  style={styles.input}
+                />
+              </div>
+            </div>
+
+            <div style={styles.inputGroup}>
+              <div style={styles.inputWrapper}>
+                <label style={styles.label}>Código de Barras:</label>
+                <input
+                  type="text"
+                  name="codigo_barras"
+                  placeholder="Código de Barras"
+                  value={form.codigo_barras}
+                  onChange={handleChange}
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.inputWrapper}>
+                <label style={styles.label}>CPF do Funcionário:</label>
+                <input
+                  type="text"
+                  name="funcionario_cpf"
+                  placeholder="CPF do Funcionário"
+                  value={form.funcionario_cpf}
+                  onChange={handleChange}
+                  style={styles.input}
+                />
+              </div>
+            </div>
           </fieldset>
 
           <div style={styles.buttonContainer}>
             <button
               type="button"
-              onClick={() => navigate(-1)}  // Volta para a tela anterior
+              onClick={() => navigate(-1)} // Volta para a tela anterior
               style={styles.voltarButton}
             >
               ◀ Voltar
@@ -106,14 +151,24 @@ const styles = {
     marginBottom: "15px",
     borderRadius: "8px",
     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+  },
+  inputGroup: {
     display: "flex",
-    flexWrap: "wrap",
-    gap: "15px",
+    justifyContent: "space-between",
+    marginBottom: "15px",
+  },
+  inputWrapper: {
+    width: "48%", // Para garantir que dois campos fiquem na mesma linha
+    display: "flex",
+    flexDirection: "column",
+  },
+  label: {
+    fontSize: "16px",
+    marginBottom: "5px",
   },
   input: {
-    width: "45%",
+    width: "100%",
     padding: "12px",
-    margin: "10px 0",
     border: "1px solid #ccc",
     borderRadius: "8px",
     fontSize: "16px",

@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "../../components/Sidebar/menu.js";
-import useVerificarAutenticacao from "../autenticacao.js";
-import { useIdFromLocalStorage } from "../../func/getIdFromLocalStorage.js";
+import Sidebar from "./menu.js";
+import useVerificarAutenticacao from "./autenticacao";
 
 function VisualizarItem() {
     useVerificarAutenticacao();
     const navigate = useNavigate();
-<<<<<<< HEAD:meu-app/src/telas/VisualizarItem.js
     const { codigoBarras } = useParams();
-=======
-
-    const id = useIdFromLocalStorage('idItem');
->>>>>>> bc6af1a2d38c1964747a44b6da2180f691f1557f:meu-app/src/telas/Item/VisualizarItem.js
 
     const [form, setForm] = useState({
         nomeItem: "",
