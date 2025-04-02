@@ -4,6 +4,7 @@ import Sidebar from "../../components/Sidebar/menu.js";
 import useVerificarAutenticacao from "../autenticacao.js";
 import { FaTrash } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
+import { IoEyeSharp } from "react-icons/io5";
 
 function Servicos() {
   useVerificarAutenticacao();
@@ -28,21 +29,20 @@ function Servicos() {
       .catch((error) => console.error("Erro ao buscar serviços:", error));
   }, []);
 
+  //Função para excluir serviço
   const excluirServico = (id) => {
-    fetch('http://localhost:5000/servicos/${id}', { method: "DELETE" })
+    fetch(`http://localhost:5000/delete-servico/${id}`, { method: "DELETE" })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao excluir serviço.");
+        }
+        return response.json();
+      })
       .then(() => {
         setServicos(servicos.filter((s) => s.id !== id));
+        alert("Serviço excluído com sucesso!");
       })
       .catch((error) => console.error("Erro ao excluir serviço:", error));
-  };
-
-  const getStatusStyle = (status) => {
-    if (status.toLowerCase() === "ativo") {
-      return { backgroundColor: "green", color: "white", padding: "1px 10px", borderRadius: "5px" };
-    } else if (status.toLowerCase() === "inativo") {
-      return { backgroundColor: "red", color: "white", padding: "1px 10px", borderRadius: "5px" };
-    }
-    return {};
   };
 
   return (
@@ -55,8 +55,7 @@ function Servicos() {
             <tr style={{ backgroundColor: "#800000", color: "white" }}>
               <th>Descrição</th>
               <th>Valor (R$)</th>
-              <th>Tempo Estimado</th>
-              <th>Status</th>
+              <th>Duração Estimado</th>
               <th>Ação</th>
             </tr>
           </thead>
@@ -66,12 +65,7 @@ function Servicos() {
                 <tr key={servico.id}>
                   <td>{servico.descricao}</td>
                   <td>R${servico.valor.toFixed(2)}</td>
-                  <td>{servico.tempoEstimado} minutos</td>
-                  <td>
-                    <span style={getStatusStyle(servico.ativo)}>
-                      {servico.ativo}
-                    </span>
-                  </td>
+                  <td>{servico.duracaoEstimada} minutos</td>
                   <td>
                     <div style={{
                       display: "flex",
@@ -81,6 +75,13 @@ function Servicos() {
                       padding: "4px"
 
                     }}>
+                      <Link to="/visualizar-servico">
+                        <button style={{ backgroundColor: '#A7A7A7', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                            // onClick={() => { localStorage.setServicos("Id", servico.cpf); }}
+                            >
+                            <IoEyeSharp alt="Visualizar" style={styles.icon} />
+                        </button>
+                      </Link>
                       <Link to="/editar-servico" >
                         <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
                           onClick={() => { localStorage.setItem("idServico", servico.id); }}>
@@ -88,8 +89,10 @@ function Servicos() {
                             alt="Editar" style={styles.icon} />
                         </button>
                       </Link>
-                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
-                        onClick={() => excluirServico(servico.id)}>
+                      <button
+                        style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
+                        onClick={() => excluirServico(servico.id)}
+                        >
                         <FaTrash alt="Excluir" style={styles.icon} />
                       </button>
 
