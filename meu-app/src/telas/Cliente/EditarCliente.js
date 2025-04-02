@@ -1,48 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
+import useVerificarAutenticacao from "../autenticacao";
+import Sidebar from "../../components/Sidebar/menu.js";
 
-import verificarId from "./idLocalStorage.js";
-
-
+import { useIdFromLocalStorage } from "../../func/getIdFromLocalStorage.js";
+import { formatarCPF, unformatCPF } from "../../func/cpf.js";
 
 function EditarCliente() {
     useVerificarAutenticacao();
-    //const idCliente = verificarId("idCliente");
+    const idCliente = useIdFromLocalStorage('cpfCliente');
 
     const navigate = useNavigate();
     const [form, setForm] = useState({
-        nome: "João Silva",
-        cpf: "123.456.789-00",
-        dataNascimento: "1990-05-12",
-        cep: "01001-000",
-        cidade: "São Paulo",
-        estado: "SP",
-        logradouro: "Rua das Flores",
-        bairro: "Centro",
-        numero: "123",
-        telefone: "(11) 98765-4321",
-        email: "joao.silva@email.com"
+        nome: "",
+        cpf: "",
+        dataNascimento: "",
+        cep: "",
+        cidade: "",
+        estado: "",
+        logradouro: "",
+        bairro: "",
+        numero: "",
     });
 
-    /* useEffect(() => {
+    useEffect(() => {
         async function fetchCliente() {
             try {
-                const response = await fetch(`http://localhost:5000/clientes?cpfCliente=${idCliente}`); // Exemplo de URL
+                const response = await fetch(`http://localhost:5000/clientes?cpf=${idCliente}`); // Exemplo de URL
                 const data = await response.json();
                 setForm({
-                    nome: data.nome || "",
-                    cpf: data.cpf || "",
-                    dataNascimento: data.dataNascimento || "",
-                    cep: data.cep || "",
-                    cidade: data.cidade || "",
-                    estado: data.estado || "",
-                    logradouro: data.logradouro || "",
-                    bairro: data.bairro || "",
-                    numero: data.numero || "",
-                    telefone: data.telefone || "",
-                    email: data.email || "",
+                    nome: data[0].nome || "",
+                    cpf: data[0].cpf || "",
+                    dataNascimento: data[0].dataNascimento || "",
+                    cep: data[0].cep || "",
+                    cidade: data[0].cidade || "",
+                    estado: data[0].estado || "",
+                    logradouro: data[0].logradouro || "",
+                    bairro: data[0].bairro || "",
+                    numero: data[0].numero || "",
+                    telefone: data[0].telefone || "",
+                    email: data[0].email || "",
                 });
             } catch (error) {
                 console.error("Erro ao buscar cliente:", error);
@@ -50,11 +47,17 @@ function EditarCliente() {
         }
 
         fetchCliente();
-    }, []); */
+    }, []);
 
     // Função para atualizar os campos do formulário
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        let fieldValue = e.target.value;
+
+        if (e.target.name === "cpf") {
+            fieldValue = formatarCPF(fieldValue);
+        }
+
+        setForm({ ...form, [e.target.name]: fieldValue });
         const { name, value } = e.target;
         // Se o campo alterado for o CEP e tiver 8 dígitos, buscar endereço
         if (name === "cep" && value.length === 8) {
@@ -65,21 +68,25 @@ function EditarCliente() {
     // Função para enviar os dados do cliente para a API
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        let formCopy = { ...form };
+        formCopy.cpf = unformatCPF(formCopy.cpf);
+
         try {
-            const response = await fetch("http://localhost:5000/clientes", {
-                method: "POST",
+            const response = await fetch(`http://localhost:5000/clientes`, {
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
+                body: JSON.stringify(formCopy),
             });
 
             if (response.ok) {
-                alert("Cliente cadastrado com sucesso!");
-                navigate("/"); // Volta para a tela de cliente
+                alert("Cliente editado com sucesso!");
+                navigate("/clientes"); // Volta para a tela de cliente
             } else {
-                alert("Erro ao cadastrar cliente.");
+                alert("Erro ao editar cliente.");
             }
         } catch (error) {
-            console.error("Erro ao cadastrar cliente:", error);
+            console.error("Erro ao editar cliente:", error);
         }
     };
 
@@ -132,11 +139,11 @@ function EditarCliente() {
                     </fieldset>
 
                     {/* Seção: Contato */}
-                    <fieldset style={styles.fieldset}>
+                    {/* <fieldset style={styles.fieldset}>
                         <legend>Contato</legend>
                         <input type="text" name="telefone" placeholder="Telefone" value={form.telefone} onChange={handleChange} style={styles.input} />
                         <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} style={styles.input} />
-                    </fieldset>
+                    </fieldset> */}
 
                     {/* Botões */}
                     <div style={styles.buttonContainer}>
@@ -144,7 +151,7 @@ function EditarCliente() {
                             navigate("/clientes")
                             localStorage.removeItem('idCliente');
                         }} style={styles.voltarButton}>◀ Voltar</button>
-                        <button type="submit" style={styles.adicionarButton}>+ Adicionar</button>
+                        <button type="submit" style={styles.salvarButton}>Salvar</button>
                     </div>
                 </form>
             </div>
@@ -178,7 +185,7 @@ const styles = {
         borderRadius: "5px",
         cursor: "pointer",
     },
-    adicionarButton: {
+    salvarButton: {
         backgroundColor: "#008000",
         color: "white",
         border: "none",

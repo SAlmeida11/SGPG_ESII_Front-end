@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao.js";
 
-function CadastrarCombustivel() {
+function CadastrarServico() {
   useVerificarAutenticacao();
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    nome: "",
-    preco_litro: "",
-    categoria: "",
-    quantidade_disponivel: "",
+    descricao: "",
+    valor: "",
+    tempoEstimado: "",
+    ativo: true,
   });
 
   const handleChange = (e) => {
@@ -20,20 +20,20 @@ function CadastrarCombustivel() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/combustiveis", {
+      const response = await fetch("http://localhost:5000/servicos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
       if (response.ok) {
-        alert("Combustível cadastrado com sucesso!");
-        navigate("/combustiveis");
+        alert("Serviço cadastrado com sucesso!");
+        navigate("/servicos");
       } else {
-        alert("Erro ao cadastrar combustível.");
+        alert("Erro ao cadastrar serviço.");
       }
     } catch (error) {
-      console.error("Erro ao cadastrar combustível:", error);
+      console.error("Erro ao cadastrar serviço:", error);
     }
   };
 
@@ -41,18 +41,40 @@ function CadastrarCombustivel() {
     <div style={{ display: "flex" }}>
       <Sidebar />
       <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
-        <h1>Cadastrar Combustível</h1>
+        <h1>Cadastrar Serviço</h1>
         <form onSubmit={handleSubmit}>
           <fieldset style={styles.fieldset}>
-            <legend>Informações do Combustível</legend>
-            <input type="text" name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} style={styles.input} />
-            <input type="number" name="preco_litro" placeholder="Preço por Litro" value={form.preco_litro} onChange={handleChange} style={styles.input} />
-            <input type="text" name="categoria" placeholder="Categoria" value={form.categoria} onChange={handleChange} style={styles.input} />
-            <input type="number" name="quantidade_disponivel" placeholder="Quantidade Disponível (L)" value={form.quantidade_disponivel} onChange={handleChange} style={styles.input} />
+            <legend>Informações do Serviço</legend>
+            <input
+              type="text"
+              name="descricao"
+              placeholder="Descrição"
+              value={form.descricao}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="number"
+              name="valor"
+              placeholder="Valor (R$)"
+              value={form.valor}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="number"
+              name="tempoEstimado"
+              placeholder="Tempo Estimado (minutos)"
+              value={form.tempoEstimado}
+              onChange={handleChange}
+              style={styles.input}
+            />
           </fieldset>
-          
+
           <div style={styles.buttonContainer}>
-            <button type="button" onClick={() => navigate("/combustiveis")} style={styles.voltarButton}>◀ Voltar</button>
+            <button type="button" onClick={() => navigate("/servicos")} style={styles.voltarButton}>
+              ◀ Voltar
+            </button>
             <button type="submit" style={styles.adicionarButton}>+ Adicionar</button>
           </div>
         </form>
@@ -97,4 +119,4 @@ const styles = {
   },
 };
 
-export default CadastrarCombustivel;
+export default CadastrarServico;

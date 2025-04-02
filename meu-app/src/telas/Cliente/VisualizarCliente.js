@@ -1,50 +1,49 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "./menu.js";
-import verificarId from "./idLocalStorage.js";
-import useVerificarAutenticacao from "./autenticacao.js";
-
-
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao.js";
+import { useIdFromLocalStorage } from "../../func/getIdFromLocalStorage.js";
 
 
 function VisualizarCliente() {
-    // const idCliente = verificarId('idCliente');
     useVerificarAutenticacao();
 
-    const idCliente = 1;
+    const idCliente = useIdFromLocalStorage('cpfCliente');
     const navigate = useNavigate();
     const [form, setForm] = useState({
-        nome: "João Silva",
-        cpf: "123.456.789-00",
-        dataNascimento: "1990-05-12",
-        cep: "01001-000",
-        cidade: "São Paulo",
-        estado: "SP",
-        logradouro: "Rua das Flores",
-        bairro: "Centro",
-        numero: "123",
-        telefone: "(11) 98765-4321",
-        email: "joao.silva@email.com"
+        nomeCliente: "",
+        cpf: "",
+        dataNascimento: "",
+        cep: "",
+        cidade: "",
+        estado: "",
+        logradouro: "",
+        bairro: "",
+        numero: "",
+        /* telefone: "",
+        email: "", */
     });
+
+
 
     // Carregar os dados do cliente ao montar o componente
     useEffect(() => {
         async function fetchCliente() {
             try {
-                const response = await fetch(`http://localhost:5000/clientes?cpfCliente=${idCliente}`); // Exemplo de URL
+                const response = await fetch(`http://localhost:5000/clientes?cpf=${idCliente}`); // Exemplo de URL
                 const data = await response.json();
                 setForm({
-                    nome: data.nome || "",
-                    cpf: data.cpf || "",
-                    dataNascimento: data.dataNascimento || "",
-                    cep: data.cep || "",
-                    cidade: data.cidade || "",
-                    estado: data.estado || "",
-                    logradouro: data.logradouro || "",
-                    bairro: data.bairro || "",
-                    numero: data.numero || "",
-                    telefone: data.telefone || "",
-                    email: data.email || "",
+                    nomeCliente: data[0].nomeCliente || "",
+                    cpf: data[0].cpf || "",
+                    dataNascimento: data[0].dataNascimento || "",
+                    cep: data[0].cep || "",
+                    cidade: data[0].cidade || "",
+                    estado: data[0].estado || "",
+                    logradouro: data[0].logradouro || "",
+                    bairro: data[0].bairro || "",
+                    numero: data[0].numero || "",
+                    telefone: data[0].telefone || "",
+                    email: data[0].email || "",
                 });
             } catch (error) {
                 console.error("Erro ao buscar cliente:", error);
@@ -63,7 +62,7 @@ function VisualizarCliente() {
                 {/* Seção: Informações Pessoais */}
                 <fieldset style={styles.fieldset}>
                     <legend>Informações Pessoais</legend>
-                    <input type="text" name="nome" disabled value={form.nome} style={styles.input} />
+                    <input type="text" name="nomeCliente" disabled value={form.nomeCliente} style={styles.input} />
                     <input type="text" name="cpf" disabled value={form.cpf} style={styles.input} />
                     <input type="date" name="dataNascimento" disabled value={form.dataNascimento} style={styles.input} />
                 </fieldset>
@@ -80,11 +79,11 @@ function VisualizarCliente() {
                 </fieldset>
 
                 {/* Seção: Contato */}
-                <fieldset style={styles.fieldset}>
+                {/* <fieldset style={styles.fieldset}>
                     <legend>Contato</legend>
                     <input type="text" name="telefone" disabled value={form.telefone} style={styles.input} />
                     <input type="email" name="email" disabled value={form.email} style={styles.input} />
-                </fieldset>
+                </fieldset> */}
 
                 {/* Botão de Voltar */}
                 <div style={styles.buttonContainer}>

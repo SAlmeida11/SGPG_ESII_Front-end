@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
+import Sidebar from "../../components/Sidebar/menu.js";
+
+import { useIdFromLocalStorage } from "../../func/getIdFromLocalStorage.js";
 
 function VisualizarFornecedor() {
   const navigate = useNavigate();
+  const cnpj = useIdFromLocalStorage('cnpj');
+
   const [form, setForm] = useState({
     nomeFor: "",
     cnpj: "",
@@ -16,7 +20,7 @@ function VisualizarFornecedor() {
   useEffect(() => {
     async function fetchFornecedor() {
       try {
-        const response = await fetch("localhost5000:"); // URL fictícia
+        const response = await fetch(`http://localhost:5000/fornecedores?cnpj=${cnpj}`);
         const data = await response.json();
         setForm({
           nomeFor: data.nomeFor || "",
@@ -27,6 +31,7 @@ function VisualizarFornecedor() {
         });
       } catch (error) {
         alert("Erro ao buscar fornecedor");
+        console.log(error);
       }
     }
 
@@ -39,7 +44,7 @@ function VisualizarFornecedor() {
     <div style={{ display: "flex" }}>
       <Sidebar />
       <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
-        <h1>VisualizarFornecedor Fornecedor</h1>
+        <h1>Visualizar Fornecedor</h1>
         <fieldset style={styles.fieldset}>
           <legend>Informações do Fornecedor</legend>
           <input

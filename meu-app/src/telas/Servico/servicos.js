@@ -1,43 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
-
-import { IoEyeSharp } from "react-icons/io5";
-import { MdEdit } from "react-icons/md";
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao.js";
 import { FaTrash } from "react-icons/fa6";
+import { MdEdit } from "react-icons/md";
 
 function Servicos() {
   useVerificarAutenticacao();
   const [servicos, setServicos] = useState([
     {
       id: 1,
-      descricao: "Corte de Cabelo",
+      descricao: "Alinhamento",
       valor: 50.0,
       tempoEstimado: 30,
-      ativo: true,
+      ativo: "Ativo",
     },
-    {
-      id: 2,
-      descricao: "Manicure",
-      valor: 40.0,
-      tempoEstimado: 45,
-      ativo: true,
-    },
-    {
-      id: 3,
-      descricao: "Massagem Relaxante",
-      valor: 120.0,
-      tempoEstimado: 60,
-      ativo: false,
-    },
-    {
-      id: 4,
-      descricao: "Limpeza de Pele",
-      valor: 80.0,
-      tempoEstimado: 50,
-      ativo: true,
-    },
+
   ]);
   const navigate = useNavigate();
 
@@ -45,7 +23,6 @@ function Servicos() {
     fetch("http://localhost:5000/servicos")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setServicos(data);
       })
       .catch((error) => console.error("Erro ao buscar serviços:", error));
@@ -57,6 +34,15 @@ function Servicos() {
         setServicos(servicos.filter((s) => s.id !== id));
       })
       .catch((error) => console.error("Erro ao excluir serviço:", error));
+  };
+
+  const getStatusStyle = (status) => {
+    if (status.toLowerCase() === "ativo") {
+      return { backgroundColor: "green", color: "white", padding: "1px 10px", borderRadius: "5px" };
+    } else if (status.toLowerCase() === "inativo") {
+      return { backgroundColor: "red", color: "white", padding: "1px 10px", borderRadius: "5px" };
+    }
+    return {};
   };
 
   return (
@@ -82,26 +68,32 @@ function Servicos() {
                   <td>R${servico.valor.toFixed(2)}</td>
                   <td>{servico.tempoEstimado} minutos</td>
                   <td>
-                    <span style={{ color: servico.ativo ? "green" : "red" }}>
-                      {servico.ativo ? "Ativo" : "Inativo"}
+                    <span style={getStatusStyle(servico.ativo)}>
+                      {servico.ativo}
                     </span>
                   </td>
                   <td>
-                      <Link to="/visualizar-servico" >
-                        <button style={{ backgroundColor: '#A7A7A7', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer', marginRight: '5px' }} onClick={() => console.log("Visualizar", servico.id)}>
-                          <IoEyeSharp
-                            alt="Visualizar" style={styles.icon} />
-                        </button>
-                      </Link>
+                    <div style={{
+                      display: "flex",
+                      gap: "4px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: "4px"
+
+                    }}>
                       <Link to="/editar-servico" >
-                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer', marginRight: '5px' }} onClick={() => console.log("Editar", servico.id)}>
+                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                          onClick={() => { localStorage.setItem("idServico", servico.id); }}>
                           <MdEdit
                             alt="Editar" style={styles.icon} />
                         </button>
                       </Link>
-                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirServico(servico.id)}>
+                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                        onClick={() => excluirServico(servico.id)}>
                         <FaTrash alt="Excluir" style={styles.icon} />
                       </button>
+
+                    </div>
                   </td>
                 </tr>
               ))
@@ -139,6 +131,7 @@ function Servicos() {
     </div>
   );
 }
+
 
 const styles = {
   icon: { width: '18px', height: '18px', color: 'white' },

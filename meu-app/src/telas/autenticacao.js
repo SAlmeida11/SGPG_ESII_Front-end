@@ -8,7 +8,7 @@ function useVerificarAutenticacao() {
   useEffect(() => {
     const cpf = localStorage.getItem('cpf'); // Verifica se o CPF está no localStorage
 
-    //Se não encontrar o CPF, redireciona para a página de login
+    // Se não encontrar o CPF, redireciona para a página de login
     if (!cpf) {
       navigate('/');
     }

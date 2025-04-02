@@ -1,44 +1,26 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
-
-import viewIcon from './view.icon.png';
-import editIcon from './editar.icon.png';
-import deleteIcon from './lixeira.icon.png';
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao";
 import { IoEyeSharp } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import { FaTrash } from "react-icons/fa6";
+import { formatarCPF } from "../../func/cpf.js";
+import { formatarData } from "../../func/data.js";
+
+/* {
+  "cpf": "12345678901",
+  "dataCadastro": "Tue, 10 Jan 2023 00:00:00 GMT",
+  "endereco_id_endereco": 1,
+  "nomeCliente": "Jo\u00e3o Silva",
+  "tipo": "Pessoa F\u00edsica"
+}, */
 
 function Cliente() {
   useVerificarAutenticacao();
   const [clientes, setClientes] = useState([
-    {
-      nomeCliente: "João Silva",
-      cpf: "123.456.789-00",
-      dataCadastro: "2024-01-15"
-    },
-    {
-      nomeCliente: "Maria Oliveira",
-      cpf: "987.654.321-00",
-      dataCadastro: "2024-02-20"
-    },
-    {
-      nomeCliente: "Carlos Pereira",
-      cpf: "456.123.789-00",
-      dataCadastro: "2023-12-10"
-    },
-    {
-      nomeCliente: "Ana Souza",
-      cpf: "321.654.987-00",
-      dataCadastro: "2024-03-05"
-    },
-    {
-      nomeCliente: "Fernando Lima",
-      cpf: "741.852.963-00",
-      dataCadastro: "2024-02-28"
-    }
+    { nomeCliente: "oioo", cpf: "111", dataCadastro: "12/12/1222" }
   ]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
   const navigate = useNavigate();
@@ -48,7 +30,7 @@ function Cliente() {
     fetch("http://localhost:5000/clientes")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+
         setClientes(data);
       })
       .catch((error) => console.error("Erro ao buscar clientes:", error));
@@ -56,21 +38,21 @@ function Cliente() {
 
   // Função para excluir cliente
   const excluirCliente = (cpf) => {
-    fetch(`http://localhost:5000/clientes/${cpf}`, { method: "DELETE" })
+    fetch(`http://localhost:5000/clientes`, { method: "DELETE" })
       .then(() => {
         setClientes(clientes.filter((cliente) => cliente.cpf !== cpf));
       })
-      .catch((error) => console.error("Erro ao excluir cliente:", error));
+      .catch((error) => {
+        console.error("Erro ao excluir cliente:", error)
+        alert("Erro ao excluir cliente!")
+      });
   };
 
   // Função para filtrar os clientes com base no termo de busca
   const filteredClientes = clientes.filter((cliente) =>
-    (cliente.nome || "").toLowerCase().includes((searchTerm || "").toLowerCase()) ||
+    (cliente.nomeCliente || "").toLowerCase().includes((searchTerm || "").toLowerCase()) ||
     (cliente.cpf || "").includes(searchTerm)
   );
-
-  const [dadosVizualizar, setdadosVizualizar] = useState();
-
 
   return (
     <div style={{ display: "flex" }}>
@@ -124,8 +106,8 @@ function Cliente() {
               filteredClientes.map((cliente) => (
                 <tr key={cliente.cpf}>
                   <td>{cliente.nomeCliente}</td>
-                  <td>{cliente.cpf}</td>
-                  <td>{cliente.dataCadastro}</td>
+                  <td>{formatarCPF(cliente.cpf)}</td>
+                  <td>{formatarData(cliente.dataCadastro)}</td>
                   <td>
                     <div
                       style={{
@@ -138,13 +120,14 @@ function Cliente() {
                     >
                       <Link to="/visualizar-cliente">
                         <button style={{ backgroundColor: '#A7A7A7', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
-                          onClick={() => { localStorage.setItem("idCliente", cliente.cpf); }}>
+                          onClick={() => { localStorage.setItem("cpfCliente", cliente.cpf); }}>
                           <IoEyeSharp alt="Visualizar" style={styles.icon} />
                         </button>
                       </Link>
 
                       <Link to="/editar-cliente">
-                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => console.log("Editar", cliente.cpf)}>
+                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                          onClick={() => localStorage.setItem("cpfCliente", cliente.cpf)}>
                           <MdEdit alt="Editar" style={styles.icon} />
                         </button>
                       </Link>

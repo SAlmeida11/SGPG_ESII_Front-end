@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao.js";
 
 function EditarFornecedor() {
     useVerificarAutenticacao();
@@ -22,21 +22,42 @@ function EditarFornecedor() {
         e.preventDefault();
         try {
             const response = await fetch("http://localhost:5000/fornecedores", {
-                method: "POST",
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
             });
 
             if (response.ok) {
-                alert("Fornecedor cadastrado com sucesso!");
+                alert("Fornecedor editado com sucesso!");
                 navigate("/fornecedores");
             } else {
-                alert("Erro ao cadastrar fornecedor.");
+                alert("Erro ao editar fornecedor.");
             }
         } catch (error) {
-            console.error("Erro ao cadastrar fornecedor:", error);
+            console.error("Erro ao editar fornecedor:", error);
         }
     };
+
+    useEffect(() => {
+        async function fetchFornecedor() {
+            try {
+                const response = await fetch(`http://localhost:5000/fornecedores?cnpj=${cnpj}`);
+                const data = await response.json();
+                setForm({
+                    nomeFor: data.nomeFor || "",
+                    cnpj: data.cnpj || "",
+                    telefone: data.telefone || "",
+                    email: data.email || "",
+                    status: data.status || "ativo",
+                });
+            } catch (error) {
+                alert("Erro ao buscar fornecedor");
+                console.log(error);
+            }
+        }
+
+        fetchFornecedor();
+    }, []);
 
     return (
         <div style={{ display: "flex" }}>
@@ -78,15 +99,6 @@ function EditarFornecedor() {
                             onChange={handleChange}
                             style={styles.input}
                         />
-                        {/* <select
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-              style={styles.input}
-            >
-              <option value="ativo">Ativo</option>
-              <option value="inativo">Inativo</option>
-            </select> */}
                     </fieldset>
 
                     <div style={styles.buttonContainer}>
@@ -97,8 +109,8 @@ function EditarFornecedor() {
                         >
                             ◀ Voltar
                         </button>
-                        <button type="submit" style={styles.adicionarButton}>
-                            + Adicionar
+                        <button type="submit" style={styles.salvarButton}>
+                            Salvar
                         </button>
                     </div>
                 </form>
@@ -140,7 +152,7 @@ const styles = {
         cursor: "pointer",
         fontSize: "16px",
     },
-    adicionarButton: {
+    salvarButton: {
         backgroundColor: "#008000",
         color: "white",
         border: "none",

@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
-
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao.js";
+import { formatarCPF, unformatCPF } from "../../func/cpf.js";
 
 function CadastrarCliente() {
   useVerificarAutenticacao();
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    nome: "",
+    nomeCliente: "",
     cpf: "",
-    dataCadastro: "",
+    dataCadastro: "21/04/2000",
     tipo: "",
     cep: "",
     cidade: "",
@@ -25,7 +25,14 @@ function CadastrarCliente() {
 
   // Função para atualizar os campos do formulário
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    let fieldValue = e.target.value;
+
+    if (e.target.name === "cpf") {
+      fieldValue = formatarCPF(fieldValue);
+    }
+
+    setForm({ ...form, [e.target.name]: fieldValue });
+
     const { name, value } = e.target;
     // Se o campo alterado for o CEP e tiver 8 dígitos, buscar endereço
     if (name === "cep" && value.length === 8) {
@@ -36,12 +43,19 @@ function CadastrarCliente() {
   // Função para enviar os dados do cliente para a API
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let formCopy = { ...form };
+    formCopy.cpf = unformatCPF(formCopy.cpf);
     try {
       const response = await fetch("http://localhost:5000/clientes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(formCopy),
       });
+
+      console.log("res", response.status);
+      const responseBody = await response.json();  // Tenta obter o corpo da resposta
+      console.log("Resposta do servidor:", responseBody);
 
       if (response.ok) {
         alert("Cliente cadastrado com sucesso!");
@@ -86,10 +100,14 @@ function CadastrarCliente() {
           {/* Seção: Informações Pessoais */}
           <fieldset style={styles.fieldset}>
             <legend>Informações Pessoais</legend>
-            <input type="text" name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} style={styles.input} />
+            <input type="text" name="nomeCliente" placeholder="Nome" value={form.nomeCliente} onChange={handleChange} style={styles.input} />
             <input type="text" name="cpf" placeholder="CPF" value={form.cpf} onChange={handleChange} style={styles.input} />
-            <input type="text" name="tipo" placeholder="Tipo" value={form.tipo} onChange={handleChange} style={styles.input} />
-            <input type="date" name="dataCadastro" placeholder="Data de Nascimento" value={form.dataCadastro} onChange={handleChange} style={styles.input} />
+            <input type="date" name="dataCadastro" placeholder="Data de Cadastro" value={form.dataCadastro} onChange={handleChange} style={styles.input} />
+            <select name="tipo" value={form.tipo} onChange={handleChange} style={styles.input}>
+              <option value="">Selecione o tipo</option>
+              <option value="fisica">Pessoa Física</option>
+              <option value="juridica">Pessoa Jurídica</option>
+            </select>
           </fieldset>
 
           {/* Seção: Endereço */}
@@ -123,6 +141,7 @@ function CadastrarCliente() {
 
 const styles = {
   fieldset: {
+
     border: "1px solid #ccc",
     padding: "10px",
     marginBottom: "15px",

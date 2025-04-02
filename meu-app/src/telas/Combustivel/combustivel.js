@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
+import { Link, useNavigate } from "react-router-dom";
+import Sidebar from "../../components/Sidebar/menu.js";
+import useVerificarAutenticacao from "../autenticacao";
+import { IoEyeSharp } from "react-icons/io5";
+import { MdEdit } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
 
 function Combustivel() {
   useVerificarAutenticacao();
-  const [combustiveis, setCombustiveis] = useState([]);
+  const [combustiveis, setCombustiveis] = useState([
+    { nome: "A", preco_litro: 2, categoria: "X", quantidade_disponivel: "1000" }
+  ]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +29,17 @@ function Combustivel() {
     fetchCombustiveis();
   }, []);
 
+  const excluirCombustivel = (id) => {
+    fetch(`http://localhost:5000/combustivel`, { method: "DELETE" })
+      .then(() => {
+        setCombustiveis(combustiveis.filter((combustiveis) => combustiveis.id !== id));
+      })
+      .catch((error) => {
+        console.error("Erro ao excluir combustivel:", error)
+        alert("Erro ao excluir combustivel!")
+      });
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
@@ -36,6 +52,7 @@ function Combustivel() {
               <th>Preço por Litro (R$)</th>
               <th>Categoria</th>
               <th>Quantidade Disponível (L)</th>
+              <th>Ação</th>
             </tr>
           </thead>
           <tbody>
@@ -46,6 +63,29 @@ function Combustivel() {
                   <td>R$ {combustivel.preco_litro.toFixed(2)}</td>
                   <td>{combustivel.categoria}</td>
                   <td>{combustivel.quantidade_disponivel} L</td>
+                  <td>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "4px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "4px"
+                      }}
+                    >
+                      <Link to="/editar-combustivel">
+                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                          onClick={() => localStorage.setItem("idCombustivel", combustivel.id)}>
+                          <MdEdit alt="Editar" style={styles.icon} />
+                        </button>
+                      </Link>
+
+                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                        onClick={() => excluirCombustivel(combustivel.id)}>
+                        <FaTrash alt="Excluir" style={styles.icon} />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))
             ) : (
@@ -82,6 +122,10 @@ function Combustivel() {
       </div>
     </div>
   );
+}
+
+const styles = {
+  icon: { width: '18px', height: '18px', color: 'white' },
 }
 
 export default Combustivel;

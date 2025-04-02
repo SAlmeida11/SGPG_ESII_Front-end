@@ -1,26 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Sidebar from "./menu.js";
-import useVerificarAutenticacao from "./autenticacao";
-
-import viewIcon from './view.icon.png';
-import editIcon from './editar.icon.png';
-import deleteIcon from './lixeira.icon.png';
-import boxIcon from './box.icon.png';
+import Sidebar from "../../components/Sidebar/menu.js";
 import { FaPowerOff } from "react-icons/fa6";
 import { IoEyeSharp } from "react-icons/io5";
-import { BsBoxSeam, BsBoxSeamFill, BsFillBoxSeamFill } from "react-icons/bs";
+import { BsFillBoxSeamFill } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
+
+import { formatarCNPJ } from "../../func/cnpj.js";
 
 function Fornecedor() {
 
   const [fornecedores, setFornecedores] = useState([
-    {
-      NomeFor: "Fornecedor 1",
-      cnpj: "00.000.000/0001-00",
-      telefone: "(11) 99999-9999",
-      Status: "Ativo",
-    }
+
   ]);
   const [searchTerm, setSearchTerm] = useState(""); // Para armazenar o termo de busca
   const navigate = useNavigate();
@@ -30,19 +21,26 @@ function Fornecedor() {
     fetch("http://localhost:5000/fornecedores")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setFornecedores(data);
       })
       .catch((error) => console.error("Erro ao buscar fornecedores:", error));
   }, []);
 
-  // Função para excluir fornecedore
-  const excluirFornecedor = (cpf) => {
-    fetch(`http://localhost:5000/fornecedores/${cpf}`, { method: "DELETE" })
+  // Função para desativar fornecedore
+  const desativarFornecedor = (cnpj) => {
+    fetch(`http://localhost:5000/fornecedores/${cnpj}`, { method: "PUT" })
       .then(() => {
-        setFornecedores(fornecedores.filter((fornecedor) => fornecedor.cpf !== cpf));
+        setFornecedores(fornecedores.filter((fornecedor) => fornecedor.cnpj !== cnpj));
       })
-      .catch((error) => console.error("Erro ao excluir fornecedor:", error));
+      .catch((error) => console.error("Erro ao desativar fornecedor:", error));
+  };
+
+  const ativarFornecedor = (cnpj) => {
+    fetch(`http://localhost:5000/fornecedores/${cnpj}`, { method: "PUT" })
+      .then(() => {
+        setFornecedores(fornecedores.filter((fornecedor) => fornecedor.cnpj !== cnpj));
+      })
+      .catch((error) => console.error("Erro ao ativar fornecedor:", error));
   };
 
   // Função para filtrar os fornecedores com base no termo de busca
@@ -114,7 +112,7 @@ function Fornecedor() {
               filteredFornecedores.map((fornecedor) => (
                 <tr key={fornecedor.cnpj}>
                   <td>{fornecedor.NomeFor}</td>
-                  <td>{fornecedor.cnpj}</td>
+                  <td>{formatarCNPJ(fornecedor.cnpj)}</td>
                   <td>{fornecedor.telefone}</td>
                   <td>
                     <span style={getStatusStyle(fornecedor.Status)}>
@@ -131,13 +129,15 @@ function Fornecedor() {
 
                     }}>
                       <Link to="/visualizar-fornecedor" >
-                        <button style={{ backgroundColor: '#A7A7A7', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => console.log("Visualizar", fornecedor.cnpj)}>
+                        <button style={{ backgroundColor: '#A7A7A7', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                          onClick={() => localStorage.setItem("cnpj", fornecedor.cnpj)}>
                           <IoEyeSharp
                             alt="Visualizar" style={styles.icon} />
                         </button>
                       </Link>
                       <Link to="/editar-fornecedor" >
-                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => console.log("Editar", fornecedor.cnpj)}>
+                        <button style={{ backgroundColor: '#DFB408', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                          onClick={() => localStorage.setItem("cnpj", fornecedor.cnpj)}>
                           <MdEdit
                             alt="Editar" style={styles.icon} />
                         </button>
@@ -154,12 +154,14 @@ function Fornecedor() {
                         </button>
                       )}
                       {(fornecedor.Status.toLowerCase() === "ativo") ? (
-                        <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirFornecedor(fornecedor.cnpj)}>
+                        <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                          onClick={() => desativarFornecedor(fornecedor.cnpj)}>
                           {/* <img src={deleteIcon} alt="Excluir" style={{ width: '18px', height: '18px' }} /> */}
                           <FaPowerOff style={styles.icon} />
                         </button>
                       ) : (
-                        <button style={{ backgroundColor: 'green', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirFornecedor(fornecedor.cnpj)}>
+                        <button style={{ backgroundColor: 'green', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }}
+                          onClick={() => ativarFornecedor(fornecedor.cnpj)}>
                           {/* <img src={deleteIcon} alt="Excluir" style={{ width: '18px', height: '18px' }} /> */}
                           <FaPowerOff style={styles.icon} />
                         </button>

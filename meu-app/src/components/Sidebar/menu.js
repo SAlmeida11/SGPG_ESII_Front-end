@@ -1,61 +1,5 @@
-/*import React from "react";
-import '../App.css';
-
-const Sidebar = () => {
-  return (
-    <div style={styles.sidebar}>
-      <div style={styles.profileSection}>
-        <h3>LUÍZ INÁCIO MEDEIROS VELA</h3>
-        <button style={styles.logoutButton}>SAIR</button>
-      </div>
-      <ul style={styles.menu}>
-        <li style={styles.menuItem}>VENDA</li>
-        <li style={styles.menuItem}>FORNECEDORES</li>
-        <li style={styles.menuItem}>ITEM</li>
-        <li style={styles.menuItem}>SERVIÇOS</li>
-        <li style={styles.menuItem}>RESERVATÓRIOS</li>
-        <li style={styles.menuItem}>FUNCIONÁRIOS</li>
-      </ul>
-    </div>
-  );
-};
-
-const styles = {
-  sidebar: {
-    width: "250px",
-    backgroundColor: "#2d3436",
-    color: "#ffffff",
-    padding: "10px",
-    height: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-  profileSection: {
-    marginBottom: "20px",
-  },
-  logoutButton: {
-    marginTop: "10px",
-    backgroundColor: "#d63031",
-    color: "#ffffff",
-    border: "none",
-    borderRadius: "5px",
-    padding: "10px",
-    cursor: "pointer",
-  },
-  menu: {
-    listStyleType: "none",
-    padding: 0,
-  },
-  menuItem: {
-    padding: "10px 0",
-    cursor: "pointer",
-  },
-};
-
-export default Sidebar;*/
-
 import React, { useEffect, useState } from "react";
+import { FaUser } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 
 function Sidebar() {
@@ -98,7 +42,7 @@ function Sidebar() {
   const handleLogout = () => {
     // Limpa o CPF do localStorage
     localStorage.removeItem('cpf');
-    
+
     // Redireciona para a página de login
     navigate('/');
   };
@@ -121,15 +65,15 @@ function Sidebar() {
       {/* Cabeçalho */}
       <div style={{ marginBottom: "20px", textAlign: "center" }}>
         <h2>SGPG</h2>
-        <div
-          style={{
+        <div>
+          <FaUser style={{
             width: "70px",
             height: "70px",
             backgroundColor: "#ccc",
             borderRadius: "50%",
             margin: "0 auto",
-          }}
-        ></div>
+          }} />
+        </div>
         <p style={{ margin: "10px 0", fontWeight: "bold" }}>
           {loading ? "Carregando..." : nome}
         </p>
@@ -147,7 +91,7 @@ function Sidebar() {
           </Link>
         </li>
         <li style={{ marginBottom: "10px", borderBottom: "3px solid white", paddingBottom: "10px" }}>
-          <Link to="/item" style={{ color: "white", textDecoration: "none" }}>
+          <Link to="/itens" style={{ color: "white", textDecoration: "none" }}>
             ITEM
           </Link>
         </li>
@@ -186,25 +130,25 @@ function Sidebar() {
             </li>
           </>
         )}
-        
-        
+
+
         <li>
-        <button
-          onClick={handleLogout}
-          style={{
-            background: "none",
-            border: "3px solid white",
-            color: "white",
-            fontSize: "16px",
-            padding: "10px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            width: "75%",
-            marginTop: "auto"
-          }}
-        >
-          SAIR
-        </button>
+          <button
+            onClick={handleLogout}
+            style={{
+              background: "none",
+              border: "3px solid white",
+              color: "white",
+              fontSize: "16px",
+              padding: "10px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              width: "75%",
+              marginTop: "auto"
+            }}
+          >
+            SAIR
+          </button>
         </li>
       </ul>
     </div>

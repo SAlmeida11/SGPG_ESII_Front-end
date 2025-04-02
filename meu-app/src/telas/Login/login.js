@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";  // Importação do hook useNavigate
-import '../App.css'; 
+import '../../App.css';
 
 function Login() {
   const [cpf, setCpf] = useState("");  // Para armazenar o CPF digitado
@@ -10,6 +10,7 @@ function Login() {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+
 
     const response = await fetch("http://localhost:5000/login", {
       method: "POST",
