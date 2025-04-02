@@ -36,16 +36,20 @@ function Cliente() {
       .catch((error) => console.error("Erro ao buscar clientes:", error));
   }, []);
 
-  // Função para excluir cliente
+  //Função para excluir cliente
   const excluirCliente = (cpf) => {
-    fetch(`http://localhost:5000/clientes`, { method: "DELETE" })
-      .then(() => {
-        setClientes(clientes.filter((cliente) => cliente.cpf !== cpf));
+    fetch(`http://localhost:5000/delete-cliente/${cpf}`, { method: "DELETE" })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao excluir cliente.");
+        }
+        return response.json();
       })
-      .catch((error) => {
-        console.error("Erro ao excluir cliente:", error)
-        alert("Erro ao excluir cliente!")
-      });
+      .then(() => {
+        setClientes(clientes.filter((c) => c.cpf !== cpf));
+        alert("cliente excluído com sucesso!");
+      })
+      .catch((error) => console.error("Erro ao excluir cliente:", error));
   };
 
   // Função para filtrar os clientes com base no termo de busca
@@ -131,10 +135,12 @@ function Cliente() {
                           <MdEdit alt="Editar" style={styles.icon} />
                         </button>
                       </Link>
-
-                      <button style={{ backgroundColor: '#ff0000', border: 'none', padding: '8px', borderRadius: '5px', cursor: 'pointer' }} onClick={() => excluirCliente(cliente.cpf)}>
-                        <FaTrash alt="Excluir" style={styles.icon} />
-                      </button>
+                    <button
+                      style={{ backgroundColor: '#ff0000', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
+                      onClick={() => excluirCliente(cliente.cpf)}
+                    >
+                      <FaTrash alt="Excluir" style={styles.icon} />
+                    </button>
                     </div>
                   </td>
 

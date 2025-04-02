@@ -59,7 +59,7 @@ function CadastrarCliente() {
 
       if (response.ok) {
         alert("Cliente cadastrado com sucesso!");
-        navigate("/"); // Volta para a tela de cliente
+        navigate("/clientes"); // Volta para a tela de cliente
       } else {
         alert("Erro ao cadastrar cliente.");
       }
