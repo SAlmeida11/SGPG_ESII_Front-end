@@ -8,14 +8,14 @@ function EditarItem() {
     useVerificarAutenticacao();
     const navigate = useNavigate();
 
-    const id = useIdFromLocalStorage('idItem');
+    const { CodigoBarras } = useParams(); // Aqui pegamos o Código de Barras diretamente da URL
 
     const [form, setForm] = useState({
-        nome: "",
-        descricao: "",
-        preco: "",
-        quantidade: "",
-        ativo: true,
+        Categoria: "",
+        NomeItem: "",
+        PrecUnitario: "",
+        QtdeEstoque: "",
+        funcionario_cpf: "",
     });
 
     const handleChange = (e) => {
@@ -25,20 +25,20 @@ function EditarItem() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5000/itens/${id}", {
+            const response = await fetch(`http://localhost:5000/editar-item/${CodigoBarras}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
             });
 
             if (response.ok) {
-                alert("Item cadastrado com sucesso!");
-                navigate("/itens");
+                alert("Item atualizado com sucesso!");
+                navigate("/itens"); // Redireciona para a lista de itens
             } else {
-                alert("Erro ao cadastrar item.");
+                alert("Erro ao editar item.");
             }
         } catch (error) {
-            console.error("Erro ao cadastrar item:", error);
+            console.error("Erro ao editar item:", error);
         }
     };
 
@@ -46,10 +46,10 @@ function EditarItem() {
     useEffect(() => {
         async function fetchItem() {
             try {
-                const response = await fetch(`http://localhost:5000/itens/${id}`);
+                const response = await fetch(`http://localhost:5000/item/${CodigoBarras}`);
                 if (response.ok) {
                     const data = await response.json();
-                    setForm(data);
+                    setForm(data); // Preenche o formulário com os dados do item
                 } else {
                     alert("Erro ao carregar os dados do item.");
                     navigate("/itens"); // Redireciona em caso de erro
@@ -59,24 +59,64 @@ function EditarItem() {
             }
         }
         fetchItem();
-    }, [id, navigate]);
+    }, [CodigoBarras, navigate]);
 
     return (
         <div style={{ display: "flex" }}>
             <Sidebar />
             <div style={{ marginLeft: "250px", padding: "20px", flexGrow: "1" }}>
-                <h1>Visualizar Item</h1>
+                <h1>Editar Item</h1>
                 <form onSubmit={handleSubmit}>
                     <fieldset style={styles.fieldset}>
                         <legend>Informações do Item</legend>
-                        <input type="text" name="nome" value={form.nome} onChange={handleChange} style={styles.input} />
-                        <input type="text" name="descricao" value={form.descricao} onChange={handleChange} style={styles.input} />
-                        <input type="number" name="preco" value={form.preco} onChange={handleChange} style={styles.input} />
-                        <input type="number" name="quantidade" value={form.quantidade} onChange={handleChange} style={styles.input} />
+                        <input
+                            type="text"
+                            name="NomeItem"
+                            value={form.NomeItem}
+                            onChange={handleChange}
+                            style={styles.input}
+                            placeholder="Nome do Item"
+                        />
+                        <input
+                            type="text"
+                            name="Categoria"
+                            value={form.Categoria}
+                            onChange={handleChange}
+                            style={styles.input}
+                            placeholder="Categoria"
+                        />
+                        <input
+                            type="number"
+                            name="PrecUnitario"
+                            value={form.PrecUnitario}
+                            onChange={handleChange}
+                            style={styles.input}
+                            placeholder="Preço Unitário"
+                        />
+                        <input
+                            type="number"
+                            name="QtdeEstoque"
+                            value={form.QtdeEstoque}
+                            onChange={handleChange}
+                            style={styles.input}
+                            placeholder="Quantidade em Estoque"
+                        />
+                        <input
+                            type="text"
+                            name="funcionario_cpf"
+                            value={form.funcionario_cpf}
+                            onChange={handleChange}
+                            style={styles.input}
+                            placeholder="CPF do Funcionário"
+                        />
                     </fieldset>
 
                     <div style={styles.buttonContainer}>
-                        <button type="button" onClick={() => navigate("/itens")} style={styles.voltarButton}>
+                        <button
+                            type="button"
+                            onClick={() => navigate("/itens")}
+                            style={styles.voltarButton}
+                        >
                             ◀ Voltar
                         </button>
                         <button type="submit" style={styles.salvarButton}>

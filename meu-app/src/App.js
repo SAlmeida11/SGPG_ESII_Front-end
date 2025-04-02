@@ -52,7 +52,7 @@ function App() {
           <Route path="/editar-combustivel" element={<EditarCombustivel />} />
           <Route path="/editar-servico" element={<EditarServico />} />
           <Route path="/editar-reservatorio" element={<EditarReservatorio />} />
-          <Route path="/editar-item" element={<EditarItem />} />
+          <Route path="/editar-item/:CodigoBarras" element={<EditarItem />} />
           <Route path="/fornecedores" element={<Fornecedor />} />
           <Route path="/funcionarios" element={<Funcionario />} />
           <Route path="/clientes" element={<Cliente />} />

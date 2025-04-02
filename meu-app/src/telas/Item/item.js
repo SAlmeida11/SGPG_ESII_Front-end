@@ -96,7 +96,7 @@ function Itens() {
                         <IoEyeSharp alt="Visualizar" style={styles.icon} />
                       </button>
                     </Link>
-                    <Link to="/editar-item">
+                    <Link to={`/editar-item/${item.codigo_barras}`}>
                       <button
                         style={{
                           backgroundColor: "#DFB408",
